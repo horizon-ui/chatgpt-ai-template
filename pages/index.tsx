@@ -91,7 +91,7 @@ export default function Chat(props: { apiKeyApp: string }) {
     };
 
     // -------------- Fetch --------------
-    const response = await fetch('/api/chatAPI', {
+    const response = await fetch('/chatgpt-ai-template/api/chatAPI', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

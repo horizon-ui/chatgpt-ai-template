@@ -20,7 +20,6 @@ import {
   Link,
 } from '@chakra-ui/react';
 import { FaCircle } from 'react-icons/fa';
-import { IoMdAdd } from 'react-icons/io';
 import NavLink from '@/components/link/NavLink';
 import { IRoute } from '@/types/navigation';
 import { PropsWithChildren, useCallback } from 'react';
@@ -205,7 +204,9 @@ export function SidebarLinks(props: SidebarLinksProps) {
                   {route.name === 'Chat UI' ? (
                     <NavLink
                       href={
-                        route.layout ? route.layout + route.path : route.path
+                        route.layout
+                          ? '/ai-template' + route.layout + route.path
+                          : '/ai-template' + route.path
                       }
                       key={key}
                       styles={{ width: '100%' }}

@@ -218,7 +218,7 @@ export default function HeaderLinks(props: {
             </Text>
           </Flex>
           <Flex flexDirection="column" p="10px">
-            <NavLink href="/settings">
+            <NavLink href="/chatgpt-ai-template/settings">
               <MenuItem
                 _hover={{ bg: 'none' }}
                 _focus={{ bg: 'none' }}
