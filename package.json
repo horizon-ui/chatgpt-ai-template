@@ -1,6 +1,6 @@
 {
-  "name": "horizon-ai-template-pro",
-  "homepage": "https://horizon-ui.com/chatgpt-ai-template",
+  "name": "chatgpt-ai-template",
+  "homepage": "https://horizon-ui.com/chatgpt-ai-template/",
   "version": "1.0.0",
   "private": true,
   "scripts": {
