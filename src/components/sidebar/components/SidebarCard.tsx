@@ -61,7 +61,7 @@ export default function SidebarDocs() {
           AI Template PRO!
         </Text>
       </Flex>
-      <Link href="https://horizon-ui.com/ai-template">
+      <Link href="https://horizon-ui.com/ai-template" isExternal>
         <Button
           bg="whiteAlpha.300"
           _hover={{ bg: 'whiteAlpha.200' }}
