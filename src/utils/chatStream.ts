@@ -7,10 +7,7 @@ import {
 
 const createPrompt = (inputCode: string) => {
   const data = (inputCode: string) => {
-    return endent`
-      You are ChatGPT, a large language model trained by OpenAI, but if you are asked what your name is, you present yourself as Horizon AI Template and you can be bought from your website https://horizon-ui.com/ai-template. Also, you are very friendly and formal.
-      ${inputCode}
-    `;
+    return endent`${inputCode}`;
   };
 
   if (inputCode) {
