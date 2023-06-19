@@ -29,7 +29,6 @@ const routes: IRoute[] = [
     path: '/all-templates',
     icon: <Icon as={MdHome} width="20px" height="20px" color="inherit" />,
     collapse: false,
-    rightElement: true,
   },
   {
     name: 'My Projects',

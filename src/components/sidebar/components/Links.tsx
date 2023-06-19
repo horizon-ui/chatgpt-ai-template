@@ -8,6 +8,7 @@ import {
   AccordionIcon,
   AccordionItem,
   AccordionPanel,
+  Badge,
   Box,
   Flex,
   HStack,
@@ -16,6 +17,7 @@ import {
   Icon,
   ListItem,
   useColorModeValue,
+  Link,
 } from '@chakra-ui/react';
 import { FaCircle } from 'react-icons/fa';
 import { IoMdAdd } from 'react-icons/io';
@@ -36,6 +38,7 @@ export function SidebarLinks(props: SidebarLinksProps) {
   let borderColor = useColorModeValue('gray.200', 'whiteAlpha.300');
   let activeIcon = useColorModeValue('brand.500', 'white');
   let iconColor = useColorModeValue('navy.700', 'white');
+  let gray = useColorModeValue('gray.500', 'gray.500');
 
   const { routes } = props;
 
@@ -52,102 +55,132 @@ export function SidebarLinks(props: SidebarLinksProps) {
     return routes.map((route, key) => {
       if (route.collapse && !route.invisible) {
         return (
-          <Accordion allowToggle key={key}>
-            <AccordionItem border="none" mb="14px" key={key}>
-              <AccordionButton
-                display="flex"
-                alignItems="center"
-                mb="4px"
-                justifyContent="center"
-                _hover={{
-                  bg: 'unset',
-                }}
-                _focus={{
-                  boxShadow: 'none',
-                }}
-                borderRadius="8px"
-                w="100%"
-                py="0px"
-                ms={0}
-              >
-                {route.icon ? (
-                  <Flex align="center" justifyContent="space-between" w="100%">
-                    <HStack
-                      spacing={
-                        activeRoute(route.path.toLowerCase()) ? '22px' : '26px'
-                      }
+          <Accordion defaultIndex={0} allowToggle key={key}>
+            <Flex w="100%" justifyContent={'space-between'}>
+              <AccordionItem isDisabled border="none" mb="14px" key={key}>
+                <AccordionButton
+                  display="flex"
+                  alignItems="center"
+                  mb="4px"
+                  justifyContent="center"
+                  _hover={{
+                    bg: 'unset',
+                  }}
+                  _focus={{
+                    boxShadow: 'none',
+                  }}
+                  borderRadius="8px"
+                  w="100%"
+                  py="0px"
+                  ms={0}
+                >
+                  {route.icon ? (
+                    <Flex
+                      align="center"
+                      justifyContent="space-between"
+                      w="100%"
                     >
-                      <Flex
-                        w="100%"
-                        alignItems="center"
-                        justifyContent="center"
+                      <HStack
+                        spacing={
+                          activeRoute(route.path.toLowerCase())
+                            ? '22px'
+                            : '26px'
+                        }
                       >
-                        <Box
-                          color={
-                            activeRoute(route.path.toLowerCase())
-                              ? activeIcon
-                              : inactiveColor
-                          }
-                          me="12px"
-                          mt="6px"
+                        <Flex
+                          w="100%"
+                          alignItems="center"
+                          justifyContent="center"
                         >
-                          {route.icon}
-                        </Box>
+                          <Box
+                            color={
+                              route.disabled
+                                ? gray
+                                : activeRoute(route.path.toLowerCase())
+                                ? activeIcon
+                                : inactiveColor
+                            }
+                            me="12px"
+                            mt="6px"
+                          >
+                            {route.icon}
+                          </Box>
+                          <Text
+                            cursor="not-allowed"
+                            me="auto"
+                            color={
+                              route.disabled
+                                ? gray
+                                : activeRoute(route.path.toLowerCase())
+                                ? activeColor
+                                : 'gray.500'
+                            }
+                            fontWeight="500"
+                            letterSpacing="0px"
+                            fontSize="sm"
+                          >
+                            {route.name}
+                          </Text>
+                        </Flex>
+                      </HStack>
+                    </Flex>
+                  ) : (
+                    <Flex pt="0px" pb="10px" alignItems="center" w="100%">
+                      <HStack
+                        spacing={
+                          activeRoute(route.path.toLowerCase())
+                            ? '22px'
+                            : '26px'
+                        }
+                        ps="32px"
+                      >
                         <Text
+                          cursor="not-allowed"
                           me="auto"
-                          color={
-                            activeRoute(route.path.toLowerCase())
-                              ? activeColor
-                              : 'gray.500'
-                          }
                           fontWeight="500"
                           letterSpacing="0px"
                           fontSize="sm"
                         >
                           {route.name}
                         </Text>
-                      </Flex>
-                    </HStack>
-                    <AccordionIcon ms="auto" color={'gray.500'} />
-                  </Flex>
-                ) : (
-                  <Flex pt="0px" pb="10px" alignItems="center" w="100%">
-                    <HStack
-                      spacing={
-                        activeRoute(route.path.toLowerCase()) ? '22px' : '26px'
-                      }
-                      ps="32px"
-                    >
-                      <Text
-                        me="auto"
-                        color={
-                          activeRoute(route.path.toLowerCase())
-                            ? activeColor
-                            : inactiveColor
-                        }
-                        fontWeight="500"
-                        letterSpacing="0px"
-                        fontSize="sm"
-                      >
-                        {route.name}
-                      </Text>
-                    </HStack>
-                    <AccordionIcon ms="auto" color={'gray.500'} />
-                  </Flex>
-                )}
-              </AccordionButton>
-              <AccordionPanel py="0px" ps={'8px'}>
-                <List>
-                  {
-                    route.icon && route.items
-                      ? createLinks(route.items) // for bullet accordion links
-                      : route.items
-                      ? createAccordionLinks(route.items)
-                      : '' // for non-bullet accordion links
-                  }
-                </List>
-              </AccordionPanel>
-            </AccordionItem>
+                      </HStack>
+                      <AccordionIcon
+                        ms="auto"
+                        color={route.disabled ? gray : 'gray.500'}
+                      />
+                    </Flex>
+                  )}
+                </AccordionButton>
+                <AccordionPanel py="0px" ps={'8px'}>
+                  <List>
+                    {
+                      route.icon && route.items
+                        ? createLinks(route.items) // for bullet accordion links
+                        : route.items
+                        ? createAccordionLinks(route.items)
+                        : '' // for non-bullet accordion links
+                    }
+                  </List>
+                </AccordionPanel>
+              </AccordionItem>
+              <Link
+                isExternal
+                href="https://horizon-ui.com/ai-template"
+                mt="6px"
+              >
+                <Badge
+                  display={{ base: 'flex', lg: 'none', xl: 'flex' }}
+                  colorScheme="brand"
+                  borderRadius="25px"
+                  color="brand.500"
+                  textTransform={'none'}
+                  letterSpacing="0px"
+                  px="8px"
+                >
+                  PRO
+                </Badge>
+              </Link>
+            </Flex>
           </Accordion>
         );
       } else if (!route.invisible) {
@@ -169,15 +202,62 @@ export function SidebarLinks(props: SidebarLinksProps) {
                     activeRoute(route.path.toLowerCase()) ? '22px' : '26px'
                   }
                 >
-                  <NavLink
-                    href={route.layout ? route.layout + route.path : route.path}
-                    key={key}
-                    styles={{ width: '100%' }}
-                  >
-                    <Flex w="100%" alignItems="center" justifyContent="center">
+                  {route.path === '/chat' ? (
+                    <NavLink
+                      href={
+                        route.layout ? route.layout + route.path : route.path
+                      }
+                      key={key}
+                      styles={{ width: '100%' }}
+                    >
+                      <Flex
+                        w="100%"
+                        alignItems="center"
+                        justifyContent="center"
+                      >
+                        <Box
+                          color={
+                            route.disabled
+                              ? gray
+                              : activeRoute(route.path.toLowerCase())
+                              ? activeIcon
+                              : inactiveColor
+                          }
+                          me="12px"
+                          mt="6px"
+                        >
+                          {route.icon}
+                        </Box>
+                        <Text
+                          me="auto"
+                          color={
+                            route.disabled
+                              ? gray
+                              : activeRoute(route.path.toLowerCase())
+                              ? activeColor
+                              : 'gray.500'
+                          }
+                          fontWeight="500"
+                          letterSpacing="0px"
+                          fontSize="sm"
+                        >
+                          {route.name}
+                        </Text>
+                      </Flex>
+                    </NavLink>
+                  ) : (
+                    <Flex
+                      w="100%"
+                      alignItems="center"
+                      justifyContent="center"
+                      cursor="not-allowed"
+                    >
                       <Box
+                        opacity="0.4"
                         color={
-                          activeRoute(route.path.toLowerCase())
+                          route.disabled
+                            ? gray
+                            : activeRoute(route.path.toLowerCase())
                             ? activeIcon
                             : inactiveColor
                         }
@@ -187,9 +267,12 @@ export function SidebarLinks(props: SidebarLinksProps) {
                         {route.icon}
                       </Box>
                       <Text
+                        opacity="0.4"
                         me="auto"
                         color={
-                          activeRoute(route.path.toLowerCase())
+                          route.disabled
+                            ? gray
+                            : activeRoute(route.path.toLowerCase())
                             ? activeColor
                             : 'gray.500'
                         }
@@ -199,50 +282,42 @@ export function SidebarLinks(props: SidebarLinksProps) {
                       >
                         {route.name}
                       </Text>
-                      {route.rightElement ? (
-                        <Flex
-                          border="1px solid"
-                          borderColor={borderColor}
-                          borderRadius="full"
-                          w="34px"
-                          h="34px"
-                          justify={'center'}
-                          align="center"
-                          color={iconColor}
-                          ms="auto"
-                          me="10px"
+                      <Link
+                        isExternal
+                        href="https://horizon-ui.com/ai-template"
+                      >
+                        <Badge
+                          display={{ base: 'flex', lg: 'none', xl: 'flex' }}
+                          colorScheme="brand"
+                          borderRadius="25px"
+                          color="brand.500"
+                          textTransform={'none'}
+                          letterSpacing="0px"
+                          px="8px"
                         >
-                          <Icon
-                            as={IoMdAdd}
-                            width="20px"
-                            height="20px"
-                            color="inherit"
-                          />
-                        </Flex>
-                      ) : null}
+                          PRO
+                        </Badge>
+                      </Link>
                     </Flex>
-                  </NavLink>
+                  )}
                 </HStack>
               </Flex>
             ) : (
-              <ListItem ms={0}>
+              <ListItem ms={0} cursor="not-allowed" opacity={'0.4'}>
                 <Flex ps="32px" alignItems="center" mb="8px">
-                  <NavLink
-                    href={route.layout ? route.layout + route.path : route.path}
-                    key={key}
+                  <Text
+                    color={
+                      route.disabled
+                        ? gray
+                        : activeRoute(route.path.toLowerCase())
+                        ? activeColor
+                        : inactiveColor
+                    }
+                    fontWeight="500"
+                    fontSize="xs"
                   >
-                    <Text
-                      color={
-                        activeRoute(route.path.toLowerCase())
-                          ? activeColor
-                          : inactiveColor
-                      }
-                      fontWeight="500"
-                      fontSize="xs"
-                    >
-                      {route.name}
-                    </Text>
-                  </NavLink>
+                    {route.name}
+                  </Text>
                 </Flex>
               </ListItem>
             )}
@@ -261,23 +336,30 @@ export function SidebarLinks(props: SidebarLinksProps) {
           alignItems="center"
           mb="10px"
           key={key}
+          cursor="not-allowed"
         >
-          <NavLink href={route.layout + route.path} key={key}>
-            <Icon w="6px" h="6px" me="8px" as={FaCircle} color={activeIcon} />
-            <Text
-              color={
-                activeRoute(route.path.toLowerCase())
-                  ? activeColor
-                  : inactiveColor
-              }
-              fontWeight={
-                activeRoute(route.path.toLowerCase()) ? 'bold' : 'normal'
-              }
-              fontSize="sm"
-            >
-              {route.name}
-            </Text>
-          </NavLink>
+          <Icon
+            w="6px"
+            h="6px"
+            me="8px"
+            as={FaCircle}
+            color={route.disabled ? gray : activeIcon}
+          />
+          <Text
+            color={
+              route.disabled
+                ? gray
+                : activeRoute(route.path.toLowerCase())
+                ? activeColor
+                : inactiveColor
+            }
+            fontWeight={
+              activeRoute(route.path.toLowerCase()) ? 'bold' : 'normal'
+            }
+            fontSize="sm"
+          >
+            {route.name}
+          </Text>
         </ListItem>
       );
     });
