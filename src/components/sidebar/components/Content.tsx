@@ -1,10 +1,12 @@
 'use client';
 // chakra imports
 import {
+  Badge,
   Box,
   Button,
   Flex,
   Icon,
+  Link,
   Menu,
   MenuButton,
   MenuList,
@@ -115,7 +117,7 @@ function SidebarContent(props: SidebarContent) {
             ms="-20px"
             py="25px"
             ps="20px"
-            pe="80px"
+            pe="20px"
             w="246px"
             borderRadius="16px"
             transform="translate(-19px, -62px)!important"
@@ -124,68 +126,137 @@ function SidebarContent(props: SidebarContent) {
             bg={bgColor}
           >
             <Box mb="30px">
-              <NavLink href="/settings">
-                <Flex align="center">
-                  <Icon
-                    as={MdOutlineManageAccounts}
-                    width="24px"
-                    height="24px"
-                    color={gray}
-                    me="12px"
-                  />
-                  <Text color={gray} fontWeight="500" fontSize="sm">
-                    Profile Settings
-                  </Text>
-                </Flex>
-              </NavLink>
+              <Flex align="center" w="100%" cursor={'not-allowed'}>
+                <Icon
+                  as={MdOutlineManageAccounts}
+                  width="24px"
+                  height="24px"
+                  color={gray}
+                  me="12px"
+                  opacity={'0.4'}
+                />
+                <Text
+                  color={gray}
+                  fontWeight="500"
+                  fontSize="sm"
+                  opacity={'0.4'}
+                >
+                  Profile Settings
+                </Text>
+                <Link
+                  ms="auto"
+                  isExternal
+                  href="https://horizon-ui.com/ai-template"
+                >
+                  <Badge
+                    display={{ base: 'flex', lg: 'none', xl: 'flex' }}
+                    colorScheme="brand"
+                    borderRadius="25px"
+                    color="brand.500"
+                    textTransform={'none'}
+                    letterSpacing="0px"
+                    px="8px"
+                  >
+                    PRO
+                  </Badge>
+                </Link>
+              </Flex>
             </Box>
             <Box mb="30px">
-              <NavLink href="/history">
-                <Flex align="center">
-                  <Icon
-                    as={LuHistory}
-                    width="24px"
-                    height="24px"
-                    color={gray}
-                    me="12px"
-                  />
-                  <Text color={gray} fontWeight="500" fontSize="sm">
-                    History
-                  </Text>
-                </Flex>
-              </NavLink>
+              <Flex cursor={'not-allowed'} align="center">
+                <Icon
+                  as={LuHistory}
+                  width="24px"
+                  height="24px"
+                  color={gray}
+                  opacity="0.4"
+                  me="12px"
+                />
+                <Text color={gray} fontWeight="500" fontSize="sm" opacity="0.4">
+                  History
+                </Text>
+                <Link
+                  ms="auto"
+                  isExternal
+                  href="https://horizon-ui.com/ai-template"
+                >
+                  <Badge
+                    display={{ base: 'flex', lg: 'none', xl: 'flex' }}
+                    colorScheme="brand"
+                    borderRadius="25px"
+                    color="brand.500"
+                    textTransform={'none'}
+                    letterSpacing="0px"
+                    px="8px"
+                  >
+                    PRO
+                  </Badge>
+                </Link>
+              </Flex>
             </Box>
             <Box mb="30px">
-              <NavLink href="/usage">
-                <Flex align="center">
-                  <Icon
-                    as={RoundedChart}
-                    width="24px"
-                    height="24px"
-                    color={gray}
-                    me="12px"
-                  />
-                  <Text color={gray} fontWeight="500" fontSize="sm">
-                    Usage
-                  </Text>
-                </Flex>
-              </NavLink>
+              <Flex cursor={'not-allowed'} align="center">
+                <Icon
+                  as={RoundedChart}
+                  width="24px"
+                  height="24px"
+                  color={gray}
+                  opacity="0.4"
+                  me="12px"
+                />
+                <Text color={gray} fontWeight="500" fontSize="sm" opacity="0.4">
+                  Usage
+                </Text>
+                <Link
+                  ms="auto"
+                  isExternal
+                  href="https://horizon-ui.com/ai-template"
+                >
+                  <Badge
+                    display={{ base: 'flex', lg: 'none', xl: 'flex' }}
+                    colorScheme="brand"
+                    borderRadius="25px"
+                    color="brand.500"
+                    textTransform={'none'}
+                    letterSpacing="0px"
+                    px="8px"
+                  >
+                    PRO
+                  </Badge>
+                </Link>
+              </Flex>
             </Box>
             <Box>
-              <NavLink href="/my-plan">
-                <Flex align="center">
-                  <Icon
-                    as={IoMdPerson}
-                    width="24px"
-                    height="24px"
-                    color={gray}
-                    me="12px"
-                  />
-                  <Text color={gray} fontWeight="500" fontSize="sm">
-                    My Plan
-                  </Text>
-                </Flex>
-              </NavLink>
+              <Flex cursor={'not-allowed'} align="center">
+                <Icon
+                  as={IoMdPerson}
+                  width="24px"
+                  height="24px"
+                  color={gray}
+                  opacity="0.4"
+                  me="12px"
+                />
+                <Text color={gray} fontWeight="500" fontSize="sm" opacity="0.4">
+                  My Plan
+                </Text>
+                <Link
+                  ms="auto"
+                  isExternal
+                  href="https://horizon-ui.com/ai-template"
+                >
+                  <Badge
+                    display={{ base: 'flex', lg: 'none', xl: 'flex' }}
+                    colorScheme="brand"
+                    borderRadius="25px"
+                    color="brand.500"
+                    textTransform={'none'}
+                    letterSpacing="0px"
+                    px="8px"
+                  >
+                    PRO
+                  </Badge>
+                </Link>
+              </Flex>
             </Box>
           </MenuList>
         </Menu>
