@@ -205,8 +205,8 @@ export function SidebarLinks(props: SidebarLinksProps) {
                     <NavLink
                       href={
                         route.layout
-                          ? '/ai-template' + route.layout + route.path
-                          : '/ai-template' + route.path
+                          ? '/chatgpt-ai-template' + route.layout + route.path
+                          : '/chatgpt-ai-template' + route.path
                       }
                       key={key}
                       styles={{ width: '100%' }}
