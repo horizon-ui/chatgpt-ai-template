@@ -17,7 +17,7 @@ import { IRoute } from './types/navigation';
 const routes: IRoute[] = [
   {
     name: 'Chat UI',
-    path: '/',
+    path: '/horizon-ui-template',
     icon: (
       <Icon as={MdAutoAwesome} width="20px" height="20px" color="inherit" />
     ),
