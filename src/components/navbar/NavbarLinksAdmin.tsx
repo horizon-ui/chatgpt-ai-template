@@ -118,7 +118,7 @@ export default function HeaderLinks(props: {
             <Link
               isExternal
               w="100%"
-              href="https://horizon-ui.com/docs-ai-template/"
+              href="https://horizon-ui.com/docs-ai-template/docs/introduction"
             >
               <Button
                 bg={buttonBg}
