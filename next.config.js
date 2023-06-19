@@ -9,7 +9,7 @@ const nextConfig = {
     return [
       {
         source: '/',
-        destination: '/chatgpt-ai-template',
+        destination: '/chatgpt-ai-template/chat',
         permanent: true,
       },
     ];
