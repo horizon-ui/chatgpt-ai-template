@@ -73,7 +73,7 @@ View <a href="https://horizon-ui.com/chatgpt-ai-template/?ref=readme-horizon-ai-
 
 ### Figma Version
 
-Horizon AI Template is available in Figma format as well! [Check it out here](https://www.figma.com/community/file/1252682781196675122)! 🎨
+Horizon AI Template is available in Figma format as well! [Check it out here](https://www.figma.com/community/file/1253038328954459768)! 🎨
 
 ### Reporting Issues
 
