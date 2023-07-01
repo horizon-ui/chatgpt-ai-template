@@ -12,6 +12,11 @@ export default function Document() {
           src={`https://www.googletagmanager.com/gtag/js?id=GTM-KC7D56Q`}
         />
         <Script
+          defer
+          data-site="horizon-ui.com"
+          src={`https://api.nepcha.com/js/nepcha-analytics.js`}
+        />
+        <Script
           id="script"
           strategy="afterInteractive"
           dangerouslySetInnerHTML={{
