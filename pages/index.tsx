@@ -25,7 +25,10 @@ import { MdAutoAwesome, MdBolt, MdEdit, MdPerson, MdContentCopy, MdFileCopy } fr
 import Bg from '../public/img/chat/bg-image.png';
 import ReactMarkdown from 'react-markdown'
 import { Typography, Table, TableBody, TableCell, TableHead, TableRow, Paper, makeStyles } from '@material-ui/core';
-
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { solarizedlight } from 'react-syntax-highlighter/dist/esm/styles/prism'; // This is a light theme, you can choose another if you prefer
+import { dark } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import { dracula } from 'react-syntax-highlighter/dist/esm/styles/prism';
 
 export default function Chat(props: { apiKeyApp: string }) {
   // *** If you use .env.local variable for your API key, method which we recommend, use the apiKey variable commented below
@@ -53,6 +56,7 @@ export default function Chat(props: { apiKeyApp: string }) {
             padding: theme.spacing(0.5),
             background: theme.palette.grey[200],
             borderRadius: theme.shape.borderRadius,
+            color: "#000"
         },
     }));
 
@@ -71,7 +75,7 @@ export default function Chat(props: { apiKeyApp: string }) {
             ),
             th: ({ ...props }) => <TableCell className={classes.markdownContent}  {...props} />,
             td: ({ ...props }) => <TableCell className={classes.markdownContent}  {...props} />,
-            code: ({ inline, children, language, ...props }) => { // Added the language prop
+            code: ({ inline, children, language, ...props }) => {
                 if (inline) {
                     return <code className={classes.inlineCode} {...props}>{children}</code>;
                 }
@@ -85,7 +89,9 @@ export default function Chat(props: { apiKeyApp: string }) {
                                 onClick={() => handleCopy(children)}
                             />
                         </div>
-                        <pre className={classes.codeBlock} {...props}><code>{children}</code></pre>
+                        <SyntaxHighlighter style={dracula}>
+                            {children}
+                        </SyntaxHighlighter>
                     </div>
                 );
             }
