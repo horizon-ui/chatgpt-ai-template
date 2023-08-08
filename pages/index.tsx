@@ -58,6 +58,13 @@ export default function Chat(props: { apiKeyApp: string }) {
     { color: 'gray.500' },
     { color: 'whiteAlpha.600' },
   );
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+      if (e.key === 'Enter') {
+          e.preventDefault();
+          handleTranslate();
+      }
+  }
   const handleTranslate = async () => {
     const apiKey = apiKeyApp;
     setInputOnSubmit(inputCode);
@@ -131,6 +138,7 @@ export default function Chat(props: { apiKeyApp: string }) {
     }
 
     setLoading(false);
+    setInputCode('');  // Clear the input value
   };
   // -------------- Copy Response --------------
   // const copyToClipboard = (text: string) => {
@@ -155,7 +163,8 @@ export default function Chat(props: { apiKeyApp: string }) {
     setInputCode(Event.target.value);
   };
 
-  return (
+  // @ts-ignore
+    return (
     <Flex
       w="100%"
       pt={{ base: '70px', md: '0px' }}
@@ -359,51 +368,50 @@ export default function Chat(props: { apiKeyApp: string }) {
           </Flex>
         </Flex>
         {/* Chat Input */}
-        <Flex
-          ms={{ base: '0px', xl: '60px' }}
-          mt="20px"
-          justifySelf={'flex-end'}
-        >
+        <Flex ms={{ base: '0px', xl: '60px' }} mt="20px" justifySelf={'flex-end'} as="form" onSubmit={e => e.preventDefault()}>
           <Input
-            minH="54px"
-            h="100%"
-            border="1px solid"
-            borderColor={borderColor}
-            borderRadius="45px"
-            p="15px 20px"
-            me="10px"
-            fontSize="sm"
-            fontWeight="500"
-            _focus={{ borderColor: 'none' }}
-            color={inputColor}
-            _placeholder={placeholderColor}
-            placeholder="Type your message here..."
-            onChange={handleChange}
+              onKeyDown={handleKeyDown}
+              minH="54px"
+              h="54px"
+              border="1px solid"
+              borderColor={borderColor}
+              borderRadius="45px"
+              p="15px 20px"
+              me="10px"
+              fontSize="sm"
+              fontWeight="500"
+              _focus={{ borderColor: 'none' }}
+              color={inputColor}
+              _placeholder={placeholderColor}
+              placeholder="Type your message here..."
+              onChange={handleChange}
+              value={inputCode}
           />
           <Button
-            variant="primary"
-            py="20px"
-            px="16px"
-            fontSize="sm"
-            borderRadius="45px"
-            ms="auto"
-            w={{ base: '160px', md: '210px' }}
-            h="54px"
-            _hover={{
-              boxShadow:
-                '0px 21px 27px -10px rgba(96, 60, 255, 0.48) !important',
-              bg:
-                'linear-gradient(15.46deg, #4A25E1 26.3%, #7B5AFF 86.4%) !important',
-              _disabled: {
-                bg: 'linear-gradient(15.46deg, #4A25E1 26.3%, #7B5AFF 86.4%)',
-              },
-            }}
-            onClick={handleTranslate}
-            isLoading={loading ? true : false}
+              type="submit"
+              variant="primary"
+              py="20px"
+              px="16px"
+              fontSize="sm"
+              borderRadius="45px"
+              ms="auto"
+              w={{ base: '160px', md: '210px' }}
+              h="54px"
+              _hover={{
+                  boxShadow:
+                      '0px 21px 27px -10px rgba(96, 60, 255, 0.48) !important',
+                  bg:
+                      'linear-gradient(15.46deg, #4A25E1 26.3%, #7B5AFF 86.4%) !important',
+                  _disabled: {
+                      bg: 'linear-gradient(15.46deg, #4A25E1 26.3%, #7B5AFF 86.4%)',
+                  },
+              }}
+              isLoading={loading ? true : false}
+              onClick={handleTranslate}
           >
-            Submit
+              Submit
           </Button>
-        </Flex>
+          </Flex>
 
         <Flex
           justify="center"
