@@ -63,7 +63,7 @@ export default function Chat(props: { apiKeyApp: string }) {
     setInputOnSubmit(inputCode);
 
     // Chat post conditions(maximum number of characters, valid message etc.)
-    const maxCodeLength = model === 'gpt-3.5-turbo' ? 700 : 700;
+    const maxCodeLength = model === 'gpt-3.5-turbo' ? 14000 : 14000;
 
     if (!apiKeyApp?.includes('sk-') && !apiKey?.includes('sk-')) {
       alert('Please enter an API key.');
