@@ -27,7 +27,8 @@ import Bg from '../public/img/chat/bg-image.png';
 export default function Chat(props: { apiKeyApp: string }) {
   // *** If you use .env.local variable for your API key, method which we recommend, use the apiKey variable commented below
   const { apiKeyApp } = props;
-  // Input States
+  const [chatHistory, setChatHistory] = useState<Array<{type: 'user' | 'bot', message: string}>>([]);
+    // Input States
   const [inputOnSubmit, setInputOnSubmit] = useState<string>('');
   const [inputCode, setInputCode] = useState<string>('');
   // Response message
@@ -75,81 +76,88 @@ export default function Chat(props: { apiKeyApp: string }) {
           handleTranslate();
       }
   }
-  const handleTranslate = async () => {
-    const apiKey = apiKeyApp;
-    setInputOnSubmit(inputCode);
+    const handleTranslate = async () => {
+        const apiKey = apiKeyApp;
+        setInputOnSubmit(inputCode);
 
-    // Chat post conditions(maximum number of characters, valid message etc.)
-    const maxCodeLength = model === 'gpt-3.5-turbo' ? 14000 : 14000;
+        const maxCodeLength = model === 'gpt-3.5-turbo' ? 14000 : 14000;
 
-    if (!apiKeyApp?.includes('sk-') && !apiKey?.includes('sk-')) {
-      alert('Please enter an API key.');
-      return;
-    }
+        if (!apiKeyApp?.includes('sk-') && !apiKey?.includes('sk-')) {
+            alert('Please enter an API key.');
+            return;
+        }
 
-    if (!inputCode) {
-      alert('Please enter your message.');
-      return;
-    }
+        if (!inputCode) {
+            alert('Please enter your message.');
+            return;
+        }
 
-    if (inputCode.length > maxCodeLength) {
-      alert(
-        `Please enter code less than ${maxCodeLength} characters. You are currently at ${inputCode.length} characters.`,
-      );
-      return;
-    }
-    setOutputCode(' ');
-    setLoading(true);
-    const controller = new AbortController();
-    const body: ChatBody = {
-      inputCode,
-      model,
-      apiKey,
+        if (inputCode.length > maxCodeLength) {
+            alert(
+                `Please enter code less than ${maxCodeLength} characters. You are currently at ${inputCode.length} characters.`,
+            );
+            return;
+        }
+
+        setChatHistory([...chatHistory, { type: 'user', message: inputCode }]);
+        setLoading(true);
+        const controller = new AbortController();
+        const body: ChatBody = {
+            inputCode,
+            model,
+            apiKey,
+        };
+
+        const response = await fetch('/api/chatAPI', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            signal: controller.signal,
+            body: JSON.stringify(body),
+        });
+
+        if (!response.ok) {
+            setLoading(false);
+            alert(
+                'Something went wrong went fetching from the API. Make sure to use a valid API key.',
+            );
+            return;
+        }
+
+        const data = response.body;
+
+        if (!data) {
+            setLoading(false);
+            alert('Something went wrong');
+            return;
+        }
+
+        const reader = data.getReader();
+        const decoder = new TextDecoder();
+
+        let fullResponse = "";
+
+        // Add a temporary bot message that we'll update in real-time
+        const tmpBotMessage = { type: 'bot', message: '' };
+        setChatHistory(prev => [...prev, tmpBotMessage]);
+
+        while (true) {
+            const { value, done } = await reader.read();
+            if (done) break;
+
+            const chunkValue = decoder.decode(value);
+            fullResponse += chunkValue;
+
+            // Update the temporary bot message in real-time
+            tmpBotMessage.message = fullResponse;
+            setChatHistory(prev => [...prev.slice(0, -1), tmpBotMessage]); // overwrite last message
+        }
+
+        setLoading(false);
+        setInputCode('');  // Clear the input value
     };
 
-    // -------------- Fetch --------------
-    const response = await fetch('/api/chatAPI', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      signal: controller.signal,
-      body: JSON.stringify(body),
-    });
-
-    if (!response.ok) {
-      setLoading(false);
-      if (response) {
-        alert(
-          'Something went wrong went fetching from the API. Make sure to use a valid API key.',
-        );
-      }
-      return;
-    }
-
-    const data = response.body;
-
-    if (!data) {
-      setLoading(false);
-      alert('Something went wrong');
-      return;
-    }
-
-    const reader = data.getReader();
-    const decoder = new TextDecoder();
-    let done = false;
-
-    while (!done) {
-      setLoading(true);
-      const { value, done: doneReading } = await reader.read();
-      done = doneReading;
-      const chunkValue = decoder.decode(value);
-      setOutputCode((prevCode) => prevCode + chunkValue);
-    }
-
-    setLoading(false);
-    setInputCode('');  // Clear the input value
-  };
   // -------------- Copy Response --------------
   // const copyToClipboard = (text: string) => {
   //   const el = document.createElement('textarea');
@@ -303,82 +311,47 @@ export default function Chat(props: { apiKeyApp: string }) {
           </Accordion>
         </Flex>
         {/* Main Box */}
-        <Flex
-          direction="column"
-          w="100%"
-          mx="auto"
-          display={outputCode ? 'flex' : 'none'}
-          mb={'auto'}
-        >
-          <Flex w="100%" align={'center'} mb="10px">
-            <Flex
-              borderRadius="full"
-              justify="center"
-              align="center"
-              bg={'transparent'}
-              border="1px solid"
-              borderColor={borderColor}
-              me="20px"
-              h="40px"
-              minH="40px"
-              minW="40px"
-            >
-              <Icon
-                as={MdPerson}
-                width="20px"
-                height="20px"
-                color={brandColor}
-              />
-            </Flex>
-            <Flex
-              p="22px"
-              border="1px solid"
-              borderColor={borderColor}
-              borderRadius="14px"
-              w="100%"
-              zIndex={'2'}
-            >
-              <Text
-                color={textColor}
-                fontWeight="600"
-                fontSize={{ base: 'sm', md: 'md' }}
-                lineHeight={{ base: '24px', md: '26px' }}
-              >
-                {inputOnSubmit}
-              </Text>
-              <Icon
-                cursor="pointer"
-                as={MdEdit}
-                ms="auto"
-                width="20px"
-                height="20px"
-                color={gray}
-              />
-            </Flex>
-          </Flex>
-          <Flex w="100%">
-            <Flex
-              borderRadius="full"
-              justify="center"
-              align="center"
-              bg={'linear-gradient(15.46deg, #4A25E1 26.3%, #7B5AFF 86.4%)'}
-              me="20px"
-              h="40px"
-              minH="40px"
-              minW="40px"
-            >
-              <Icon
-                as={MdAutoAwesome}
-                width="20px"
-                height="20px"
-                color="white"
-              />
-            </Flex>
-            <MessageBoxChat output={outputCode} />
-            <Button onClick={copyToClipboard} ml={2}>Copy</Button>
-          </Flex>
-        </Flex>
-        {/* Chat Input */}
+          {chatHistory.map((chat, index) => (
+              <Flex key={index} w="100%" align={'center'} mb="10px">
+                  <Flex
+                      borderRadius="full"
+                      justify="center"
+                      align="center"
+                      bg={chat.type === 'user' ? 'transparent' : 'linear-gradient(15.46deg, #4A25E1 26.3%, #7B5AFF 86.4%)'}
+                      me="20px"
+                      h="40px"
+                      minH="40px"
+                      minW="40px"
+                  >
+                      <Icon
+                          as={chat.type === 'user' ? MdPerson : MdAutoAwesome}
+                          width="20px"
+                          height="20px"
+                          color={chat.type === 'user' ? brandColor : 'white'}
+                      />
+                  </Flex>
+                  <Flex
+                      p="22px"
+                      border="1px solid"
+                      borderColor={borderColor}
+                      borderRadius="14px"
+                      w="100%"
+                      zIndex={'2'}
+                  >
+                      <Text
+                          color={textColor}
+                          fontWeight="600"
+                          fontSize={{ base: 'sm', md: 'md' }}
+                          lineHeight={{ base: '24px', md: '26px' }}
+                      >
+                          {chat.message}
+                      </Text>
+                      {chat.type === 'user' && <Icon cursor="pointer" as={MdEdit} ms="auto" width="20px" height="20px" color={gray} />}
+                  </Flex>
+              </Flex>
+          ))}
+
+          {/* Chat Input */}
         <Flex ms={{ base: '0px', xl: '60px' }} mt="20px" justifySelf={'flex-end'} as="form" onSubmit={e => e.preventDefault()}>
           <Input
               onKeyDown={handleKeyDown}
