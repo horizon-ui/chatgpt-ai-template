@@ -25,14 +25,17 @@ import {
   useDisclosure,
   useToast,
 } from '@chakra-ui/react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { MdLock } from 'react-icons/md';
 
 function APIModal(props: { setApiKey: any; sidebar?: boolean }) {
   const { setApiKey, sidebar } = props;
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [inputCode, setInputCode] = useState<string>('');
-  const [isApiKeySet, setIsApiKeySet] = useState<boolean>(Boolean(localStorage.getItem('apiKey')));
+  const [isApiKeySet, setIsApiKeySet] = useState<boolean>(false);
+    useEffect(() => {
+        setIsApiKeySet(Boolean(localStorage.getItem('apiKey')));
+    }, []);
   const textColor = useColorModeValue('navy.700', 'white');
   const grayColor = useColorModeValue('gray.500', 'gray.500');
   const inputBorder = useColorModeValue('gray.200', 'whiteAlpha.200');
@@ -44,6 +47,7 @@ function APIModal(props: { setApiKey: any; sidebar?: boolean }) {
   const handleChange = (Event: any) => {
     setInputCode(Event.target.value);
   };
+
 
   const handleApiKeyChange = (value: string) => {
     setApiKey(value);
