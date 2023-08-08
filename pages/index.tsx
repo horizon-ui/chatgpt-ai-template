@@ -23,6 +23,9 @@ import {
 import { useEffect, useState } from 'react';
 import { MdAutoAwesome, MdBolt, MdEdit, MdPerson, MdContentCopy } from 'react-icons/md';
 import Bg from '../public/img/chat/bg-image.png';
+import ReactMarkdown from 'react-markdown'
+import { Typography, Table, TableBody, TableCell, TableHead, TableRow, Paper, makeStyles } from '@material-ui/core';
+
 
 export default function Chat(props: { apiKeyApp: string }) {
   // *** If you use .env.local variable for your API key, method which we recommend, use the apiKey variable commented below
@@ -37,7 +40,42 @@ export default function Chat(props: { apiKeyApp: string }) {
   const [model, setModel] = useState<OpenAIModel>('gpt-3.5-turbo');
   // Loading state
   const [loading, setLoading] = useState<boolean>(false);
+    const useStyles = makeStyles(theme => ({
+        codeBlock: {
+            padding: theme.spacing(2),
+            background: theme.palette.grey[300],
+            overflowX: 'auto',
+        },
+        inlineCode: {
+            padding: theme.spacing(0.5),
+            background: theme.palette.grey[200],
+            borderRadius: theme.shape.borderRadius,
+        },
+    }));
 
+    const MarkdownComponents = () => {
+        const classes = useStyles();
+
+        return {
+            h1: ({ ...props }) => <Typography variant="h3" gutterBottom {...props} />,
+            h2: ({ ...props }) => <Typography variant="h4" gutterBottom {...props} />,
+            h3: ({ ...props }) => <Typography variant="h5" gutterBottom {...props} />,
+            p: ({ ...props }) => <Typography paragraph {...props} />,
+            table: ({ children, ...props }) => (
+                <Paper style={{ overflow: 'hidden' }}>
+                    <Table {...props}>{children}</Table>
+                </Paper>
+            ),
+            th: ({ ...props }) => <TableCell {...props} />,
+            td: ({ ...props }) => <TableCell {...props} />,
+            code: ({ inline, children, ...props }) => {
+                if (inline) {
+                    return <code className={classes.inlineCode} {...props}>{children}</code>;
+                }
+                return <pre className={classes.codeBlock} {...props}><code>{children}</code></pre>;
+            }
+        };
+    };
   // API Key
   // const [apiKey, setApiKey] = useState<string>(apiKeyApp);
   const borderColor = useColorModeValue('gray.200', 'whiteAlpha.200');
@@ -181,6 +219,7 @@ export default function Chat(props: { apiKeyApp: string }) {
   const handleChange = (Event: any) => {
     setInputCode(Event.target.value);
   };
+    const components = MarkdownComponents();
 
   // @ts-ignore
     return (
@@ -345,7 +384,7 @@ export default function Chat(props: { apiKeyApp: string }) {
                           fontSize={{ base: 'sm', md: 'md' }}
                           lineHeight={{ base: '24px', md: '26px' }}
                       >
-                          {chat.message}
+                          <ReactMarkdown components={components}>{chat.message}</ReactMarkdown>
                       </Text>
                       <Flex ms="auto" alignItems="center">
                           {chat.type === 'user' &&
