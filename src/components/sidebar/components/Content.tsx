@@ -69,10 +69,6 @@ function SidebarContent(props: SidebarContent) {
           <Links routes={routes} />
         </Box>
       </Stack>
-
-      <Box mt="60px" width={'100%'} display={'flex'} justifyContent={'center'}>
-        <SidebarCard />
-      </Box>
       <APIModal setApiKey={setApiKey} sidebar={true} />
       <Flex
         mt="8px"
