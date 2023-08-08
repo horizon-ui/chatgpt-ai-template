@@ -21,7 +21,7 @@ import {
   useColorModeValue,
 } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
-import { MdAutoAwesome, MdBolt, MdEdit, MdPerson, MdContentCopy } from 'react-icons/md';
+import { MdAutoAwesome, MdBolt, MdEdit, MdPerson, MdContentCopy, MdFileCopy } from 'react-icons/md'; // Added MdFileCopy for the copy button
 import Bg from '../public/img/chat/bg-image.png';
 import ReactMarkdown from 'react-markdown'
 import { Typography, Table, TableBody, TableCell, TableHead, TableRow, Paper, makeStyles } from '@material-ui/core';
@@ -41,6 +41,9 @@ export default function Chat(props: { apiKeyApp: string }) {
   // Loading state
   const [loading, setLoading] = useState<boolean>(false);
     const useStyles = makeStyles(theme => ({
+        markdownContent: {
+            whiteSpace: 'pre-wrap',
+        },
         codeBlock: {
             padding: theme.spacing(2),
             background: theme.palette.grey[300],
@@ -57,22 +60,34 @@ export default function Chat(props: { apiKeyApp: string }) {
         const classes = useStyles();
 
         return {
-            h1: ({ ...props }) => <Typography variant="h3" gutterBottom {...props} />,
-            h2: ({ ...props }) => <Typography variant="h4" gutterBottom {...props} />,
-            h3: ({ ...props }) => <Typography variant="h5" gutterBottom {...props} />,
-            p: ({ ...props }) => <Typography paragraph {...props} />,
+            h1: ({ ...props }) => <Typography variant="h3" gutterBottom {...props} className={classes.markdownContent} />,
+            h2: ({ ...props }) => <Typography variant="h4" gutterBottom {...props} className={classes.markdownContent} />,
+            h3: ({ ...props }) => <Typography variant="h5" gutterBottom {...props} className={classes.markdownContent} />,
+            p: ({ ...props }) => <Typography paragraph {...props} className={classes.markdownContent} />,
             table: ({ children, ...props }) => (
-                <Paper style={{ overflow: 'hidden' }}>
-                    <Table {...props}>{children}</Table>
+                <Paper className={classes.markdownContent}  style={{ overflow: 'hidden' }}>
+                    <Table className={classes.markdownContent}  {...props}>{children}</Table>
                 </Paper>
             ),
-            th: ({ ...props }) => <TableCell {...props} />,
-            td: ({ ...props }) => <TableCell {...props} />,
-            code: ({ inline, children, ...props }) => {
+            th: ({ ...props }) => <TableCell className={classes.markdownContent}  {...props} />,
+            td: ({ ...props }) => <TableCell className={classes.markdownContent}  {...props} />,
+            code: ({ inline, children, language, ...props }) => { // Added the language prop
                 if (inline) {
                     return <code className={classes.inlineCode} {...props}>{children}</code>;
                 }
-                return <pre className={classes.codeBlock} {...props}><code>{children}</code></pre>;
+                return (
+                    <div style={{ position: 'relative', marginBottom: '16px' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #ccc', paddingBottom: '5px' }}>
+                            <span>{language}</span>
+                            <Icon
+                                as={MdFileCopy}
+                                style={{ cursor: 'pointer' }}
+                                onClick={() => handleCopy(children)}
+                            />
+                        </div>
+                        <pre className={classes.codeBlock} {...props}><code>{children}</code></pre>
+                    </div>
+                );
             }
         };
     };
