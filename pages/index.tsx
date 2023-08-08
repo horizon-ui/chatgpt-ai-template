@@ -59,7 +59,17 @@ export default function Chat(props: { apiKeyApp: string }) {
     { color: 'whiteAlpha.600' },
   );
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+  const copyToClipboard = () => {
+      const el = document.createElement('textarea');
+      el.value = outputCode;
+      document.body.appendChild(el);
+      el.select();
+      document.execCommand('copy');
+      document.body.removeChild(el);
+      alert("Copied to Clipboard!");
+  };
+
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
       if (e.key === 'Enter') {
           e.preventDefault();
           handleTranslate();
@@ -365,6 +375,7 @@ export default function Chat(props: { apiKeyApp: string }) {
               />
             </Flex>
             <MessageBoxChat output={outputCode} />
+            <Button onClick={copyToClipboard} ml={2}>Copy</Button>
           </Flex>
         </Flex>
         {/* Chat Input */}
