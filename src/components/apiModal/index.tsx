@@ -32,7 +32,7 @@ function APIModal(props: { setApiKey: any; sidebar?: boolean }) {
   const { setApiKey, sidebar } = props;
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [inputCode, setInputCode] = useState<string>('');
-
+  const [isApiKeySet, setIsApiKeySet] = useState<boolean>(Boolean(localStorage.getItem('apiKey')));
   const textColor = useColorModeValue('navy.700', 'white');
   const grayColor = useColorModeValue('gray.500', 'gray.500');
   const inputBorder = useColorModeValue('gray.200', 'whiteAlpha.200');
@@ -47,8 +47,8 @@ function APIModal(props: { setApiKey: any; sidebar?: boolean }) {
 
   const handleApiKeyChange = (value: string) => {
     setApiKey(value);
-
     localStorage.setItem('apiKey', value);
+    setIsApiKeySet(true);
   };
   return (
     <>
@@ -63,7 +63,7 @@ function APIModal(props: { setApiKey: any; sidebar?: boolean }) {
           mt="8px"
           minH="40px"
         >
-          Set API Key
+            {isApiKeySet ? "Change API Key" : "Set Api Key"}
         </Button>
       ) : (
         <Button
