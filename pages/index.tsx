@@ -21,7 +21,7 @@ import {
   useColorModeValue,
 } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
-import { MdAutoAwesome, MdBolt, MdEdit, MdPerson } from 'react-icons/md';
+import { MdAutoAwesome, MdBolt, MdEdit, MdPerson, MdContentCopy } from 'react-icons/md';
 import Bg from '../public/img/chat/bg-image.png';
 
 export default function Chat(props: { apiKeyApp: string }) {
@@ -60,15 +60,16 @@ export default function Chat(props: { apiKeyApp: string }) {
     { color: 'whiteAlpha.600' },
   );
 
-  const copyToClipboard = () => {
-      const el = document.createElement('textarea');
-      el.value = outputCode;
-      document.body.appendChild(el);
-      el.select();
-      document.execCommand('copy');
-      document.body.removeChild(el);
-      alert("Copied to Clipboard!");
-  };
+    const handleCopy = (text) => {
+        navigator.clipboard.writeText(text)
+            .then(() => {
+                alert('Text copied to clipboard!');
+            })
+            .catch(err => {
+                alert('Failed to copy text. Try manually.');
+                console.error('Failed to copy text: ', err);
+            });
+    };
 
     const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
       if (e.key === 'Enter') {
@@ -80,7 +81,7 @@ export default function Chat(props: { apiKeyApp: string }) {
         const apiKey = apiKeyApp;
         setInputOnSubmit(inputCode);
 
-        const maxCodeLength = model === 'gpt-3.5-turbo' ? 14000 : 14000;
+        const maxCodeLength = model === 'gpt-3.5-turbo' ? 60000 : 60000;
 
         if (!apiKeyApp?.includes('sk-') && !apiKey?.includes('sk-')) {
             alert('Please enter an API key.');
@@ -346,10 +347,16 @@ export default function Chat(props: { apiKeyApp: string }) {
                       >
                           {chat.message}
                       </Text>
-                      {chat.type === 'user' && <Icon cursor="pointer" as={MdEdit} ms="auto" width="20px" height="20px" color={gray} />}
+                      <Flex ms="auto" alignItems="center">
+                          {chat.type === 'user' &&
+                              <Icon cursor="pointer" as={MdEdit} width="20px" height="20px" color={gray} ml={3} />
+                          }
+                          {chat.type === 'bot' && ( <Icon cursor="pointer" as={MdContentCopy} width="20px" height="20px" color={gray} ml={3} onClick={() => handleCopy(chat.message)} /> )}
+                      </Flex>
                   </Flex>
               </Flex>
           ))}
+
 
           {/* Chat Input */}
         <Flex ms={{ base: '0px', xl: '60px' }} mt="20px" justifySelf={'flex-end'} as="form" onSubmit={e => e.preventDefault()}>
