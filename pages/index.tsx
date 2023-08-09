@@ -3,6 +3,9 @@
 
 import Link from '@/components/link/Link';
 import MessageBoxChat from '@/components/MessageBox';
+import ModelChange from '@/components/chat/ModelChange';
+import ChatInput from '@/components/chat/ChatInput';
+import ChatHistory from '@/components/chat/ChatHistory';
 import { ChatBody, OpenAIModel } from '@/types/types';
 import {
   Accordion,
@@ -21,7 +24,7 @@ import {
   useColorModeValue,
 } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
-import { MdAutoAwesome, MdBolt, MdEdit, MdPerson, MdContentCopy, MdFileCopy } from 'react-icons/md'; // Added MdFileCopy for the copy button
+import { MdAutoAwesome, MdBolt, MdEdit, MdPerson, MdContentCopy, MdFileCopy } from 'react-icons/md'; 
 import Bg from '../public/img/chat/bg-image.png';
 import ReactMarkdown from 'react-markdown'
 import { Typography, Table, TableBody, TableCell, TableHead, TableRow, Paper, makeStyles } from '@material-ui/core';
@@ -41,69 +44,6 @@ export default function Chat(props: { apiKeyApp: string }) {
   const [model, setModel] = useState<OpenAIModel>('gpt-3.5-turbo');
   // Loading state
   const [loading, setLoading] = useState<boolean>(false);
-    const useStyles = makeStyles(theme => ({
-        markdownContent: {
-            whiteSpace: 'pre-wrap',
-        },
-        codeBlock: {
-            padding: theme.spacing(2),
-            background: theme.palette.grey[300],
-            overflowX: 'auto',
-        },
-        inlineCode: {
-            padding: theme.spacing(0.5),
-            background: theme.palette.grey[200],
-            borderRadius: theme.shape.borderRadius,
-            color: "#000"
-        },
-    }));
-
-    const MarkdownComponents = () => {
-        const classes = useStyles();
-
-        return {
-            h1: ({ ...props }) => <Typography variant="h3" gutterBottom {...props} className={classes.markdownContent} />,
-            h2: ({ ...props }) => <Typography variant="h4" gutterBottom {...props} className={classes.markdownContent} />,
-            h3: ({ ...props }) => <Typography variant="h5" gutterBottom {...props} className={classes.markdownContent} />,
-            p: ({ ...props }) => <Typography paragraph {...props} className={classes.markdownContent} />,
-            table: ({ children, ...props }) => (
-                <Paper className={classes.markdownContent}  style={{ overflow: 'hidden' }}>
-                    <Table className={classes.markdownContent}  {...props}>{children}</Table>
-                </Paper>
-            ),
-            th: ({ ...props }) => <TableCell className={classes.markdownContent}  {...props} />,
-            td: ({ ...props }) => <TableCell className={classes.markdownContent}  {...props} />,
-            code: ({ inline, language, children, ...props }) => {
-                // Check if children is empty or undefined
-                if (!children || (typeof children === 'string' && !children.trim())) {
-                    return null; // Don't render anything if children is empty or undefined
-                } else if (Array.isArray(children) && !children.length) {
-                    return null;
-                } else if (typeof children === 'object' && !Object.keys(children).length) {
-                    return null;
-                }
-
-                if (inline) {
-                    return <code className={classes.inlineCode} {...props}>{children}</code>;
-                }
-
-                return (
-                    <div style={{ position: 'relative', marginBottom: '16px' }}>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #ccc', paddingBottom: '5px' }}>
-                            <Icon
-                                as={MdFileCopy}
-                                style={{ cursor: 'pointer' }}
-                                onClick={() => handleCopy(children)}
-                            />
-                        </div>
-                        <SyntaxHighlighter style={dracula} language={"php"}>
-                            {children ?? '...'}
-                        </SyntaxHighlighter>
-                    </div>
-                );
-            }
-        };
-    };
   // API Key
   // const [apiKey, setApiKey] = useState<string>(apiKeyApp);
   const borderColor = useColorModeValue('gray.200', 'whiteAlpha.200');
@@ -137,12 +77,7 @@ export default function Chat(props: { apiKeyApp: string }) {
             });
     };
 
-    const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-      if (e.key === 'Enter') {
-          e.preventDefault();
-          handleTranslate();
-      }
-  }
+
     const handleTranslate = async () => {
         const apiKey = apiKeyApp;
         setInputOnSubmit(inputCode);
@@ -225,29 +160,7 @@ export default function Chat(props: { apiKeyApp: string }) {
         setInputCode('');  // Clear the input value
     };
 
-  // -------------- Copy Response --------------
-  // const copyToClipboard = (text: string) => {
-  //   const el = document.createElement('textarea');
-  //   el.value = text;
-  //   document.body.appendChild(el);
-  //   el.select();
-  //   document.execCommand('copy');
-  //   document.body.removeChild(el);
-  // };
 
-  // *** Initializing apiKey with .env.local value
-  // useEffect(() => {
-  // ENV file verison
-  // const apiKeyENV = process.env.NEXT_PUBLIC_OPENAI_API_KEY
-  // if (apiKey === undefined || null) {
-  //   setApiKey(apiKeyENV)
-  // }
-  // }, [])
-
-  const handleChange = (Event: any) => {
-    setInputCode(Event.target.value);
-  };
-    const components = MarkdownComponents();
 
   // @ts-ignore
     return (
@@ -272,204 +185,15 @@ export default function Chat(props: { apiKeyApp: string }) {
         minH={{ base: '75vh', '2xl': '85vh' }}
         maxW="1000px"
       >
-        {/* Model Change */}
-        <Flex direction={'column'} w="100%" mb={outputCode ? '20px' : 'auto'}>
-          <Flex
-            mx="auto"
-            zIndex="2"
-            w="max-content"
-            mb="20px"
-            borderRadius="60px"
-          >
-            <Flex
-              cursor={'pointer'}
-              transition="0.3s"
-              justify={'center'}
-              align="center"
-              bg={model === 'gpt-3.5-turbo' ? buttonBg : 'transparent'}
-              w="174px"
-              h="70px"
-              boxShadow={model === 'gpt-3.5-turbo' ? buttonShadow : 'none'}
-              borderRadius="14px"
-              color={textColor}
-              fontSize="18px"
-              fontWeight={'700'}
-              onClick={() => setModel('gpt-3.5-turbo')}
-            >
-              <Flex
-                borderRadius="full"
-                justify="center"
-                align="center"
-                bg={bgIcon}
-                me="10px"
-                h="39px"
-                w="39px"
-              >
-                <Icon
-                  as={MdAutoAwesome}
-                  width="20px"
-                  height="20px"
-                  color={iconColor}
-                />
-              </Flex>
-              GPT-3.5
-            </Flex>
-            <Flex
-              cursor={'pointer'}
-              transition="0.3s"
-              justify={'center'}
-              align="center"
-              bg={model === 'gpt-4' ? buttonBg : 'transparent'}
-              w="164px"
-              h="70px"
-              boxShadow={model === 'gpt-4' ? buttonShadow : 'none'}
-              borderRadius="14px"
-              color={textColor}
-              fontSize="18px"
-              fontWeight={'700'}
-              onClick={() => setModel('gpt-4')}
-            >
-              <Flex
-                borderRadius="full"
-                justify="center"
-                align="center"
-                bg={bgIcon}
-                me="10px"
-                h="39px"
-                w="39px"
-              >
-                <Icon
-                  as={MdBolt}
-                  width="20px"
-                  height="20px"
-                  color={iconColor}
-                />
-              </Flex>
-              GPT-4
-            </Flex>
-          </Flex>
-
-          <Accordion color={gray} allowToggle w="100%" my="0px" mx="auto">
-            <AccordionItem border="none">
-              <AccordionButton
-                borderBottom="0px solid"
-                maxW="max-content"
-                mx="auto"
-                _hover={{ border: '0px solid', bg: 'none' }}
-                _focus={{ border: '0px solid', bg: 'none' }}
-              >
-                <Box flex="1" textAlign="left">
-                  <Text color={gray} fontWeight="500" fontSize="sm">
-                    No plugins added
-                  </Text>
-                </Box>
-                <AccordionIcon color={gray} />
-              </AccordionButton>
-              <AccordionPanel mx="auto" w="max-content" p="0px 0px 10px 0px">
-                <Text
-                  color={gray}
-                  fontWeight="500"
-                  fontSize="sm"
-                  textAlign={'center'}
-                >
-                  This is a cool text example.
-                </Text>
-              </AccordionPanel>
-            </AccordionItem>
-          </Accordion>
-        </Flex>
-        {/* Main Box */}
-          {chatHistory.map((chat, index) => (
-              <Flex key={index} w="100%" align={'center'} mb="10px">
-                  <Flex
-                      borderRadius="full"
-                      justify="center"
-                      align="center"
-                      bg={chat.type === 'user' ? 'transparent' : 'linear-gradient(15.46deg, #4A25E1 26.3%, #7B5AFF 86.4%)'}
-                      me="20px"
-                      h="40px"
-                      minH="40px"
-                      minW="40px"
-                  >
-                      <Icon
-                          as={chat.type === 'user' ? MdPerson : MdAutoAwesome}
-                          width="20px"
-                          height="20px"
-                          color={chat.type === 'user' ? brandColor : 'white'}
-                      />
-                  </Flex>
-                  <Flex
-                      p="22px"
-                      border="1px solid"
-                      borderColor={borderColor}
-                      borderRadius="14px"
-                      w="100%"
-                      zIndex={'2'}
-                  >
-                      <Text
-                          color={textColor}
-                          fontWeight="600"
-                          fontSize={{ base: 'sm', md: 'md' }}
-                          lineHeight={{ base: '24px', md: '26px' }}
-                      >
-                          <ReactMarkdown components={components}>{chat.message}</ReactMarkdown>
-                      </Text>
-                      <Flex ms="auto" alignItems="center">
-                          {chat.type === 'user' &&
-                              <Icon cursor="pointer" as={MdEdit} width="20px" height="20px" color={gray} ml={3} />
-                          }
-                          {chat.type === 'bot' && ( <Icon cursor="pointer" as={MdContentCopy} width="20px" height="20px" color={gray} ml={3} onClick={() => handleCopy(chat.message)} /> )}
-                      </Flex>
-                  </Flex>
-              </Flex>
-          ))}
-
-
-          {/* Chat Input */}
-        <Flex ms={{ base: '0px', xl: '60px' }} mt="20px" justifySelf={'flex-end'} as="form" onSubmit={e => e.preventDefault()}>
-          <Input
-              onKeyDown={handleKeyDown}
-              minH="54px"
-              h="54px"
-              border="1px solid"
-              borderColor={borderColor}
-              borderRadius="45px"
-              p="15px 20px"
-              me="10px"
-              fontSize="sm"
-              fontWeight="500"
-              _focus={{ borderColor: 'none' }}
-              color={inputColor}
-              _placeholder={placeholderColor}
-              placeholder="Type your message here..."
-              onChange={handleChange}
-              value={inputCode}
-          />
-          <Button
-              type="submit"
-              variant="primary"
-              py="20px"
-              px="16px"
-              fontSize="sm"
-              borderRadius="45px"
-              ms="auto"
-              w={{ base: '160px', md: '210px' }}
-              h="54px"
-              _hover={{
-                  boxShadow:
-                      '0px 21px 27px -10px rgba(96, 60, 255, 0.48) !important',
-                  bg:
-                      'linear-gradient(15.46deg, #4A25E1 26.3%, #7B5AFF 86.4%) !important',
-                  _disabled: {
-                      bg: 'linear-gradient(15.46deg, #4A25E1 26.3%, #7B5AFF 86.4%)',
-                  },
-              }}
-              isLoading={loading ? true : false}
-              onClick={handleTranslate}
-          >
-              Submit
-          </Button>
-          </Flex>
+        
+        <ModelChange model={model} setModel={setModel} outputCode={outputCode} />
+        <ChatHistory chatHistory={chatHistory} handleCopy={handleCopy} />
+        <ChatInput
+          inputCode={inputCode}
+          setInputCode={setInputCode}
+          handleTranslate={handleTranslate}
+          loading={loading}
+        />
 
         <Flex
           justify="center"
