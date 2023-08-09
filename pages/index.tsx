@@ -29,16 +29,28 @@ import { MdAutoAwesome, MdBolt, MdEdit, MdPerson, MdContentCopy, MdFileCopy } fr
 import Bg from '../public/img/chat/bg-image.png';
 import ReactMarkdown from 'react-markdown'
 import { Typography, Table, TableBody, TableCell, TableHead, TableRow, Paper, makeStyles } from '@material-ui/core';
-import { handleCommands } from '@/utils/commands';
+import { useChat } from '@/utils/useChat';
+import { handleCopy } from '@/utils/copy';
 
 export default function Chat(props: { apiKeyApp: string }) {
+	const { 
+        chatHistory,
+		setChatHistory, 
+        inputOnSubmit, 
+        setInputOnSubmit, 
+        inputCode, 
+        setInputCode, 
+        outputCode, 
+        setOutputCode, 
+        model, 
+        setModel, 
+        loading, 
+        setLoading, 
+        clearChatHistory, 
+        handleChat 
+    } = useChat(props.apiKeyApp);
+
 	const { apiKeyApp } = props;
-	const [chatHistory, setChatHistory] = useState<Array<{type: 'user' | 'bot', message: string}>>([]);
-	const [inputOnSubmit, setInputOnSubmit] = useState<string>('');
-	const [inputCode, setInputCode] = useState<string>('');
-	const [outputCode, setOutputCode] = useState<string>('');
-	const [model, setModel] = useState<OpenAIModel>('gpt-3.5-turbo');
-	const [loading, setLoading] = useState<boolean>(false);
 	const borderColor = useColorModeValue('gray.200', 'whiteAlpha.200');
 	const inputColor = useColorModeValue('navy.700', 'white');
 	const iconColor = useColorModeValue('brand.500', 'white');
@@ -71,116 +83,6 @@ export default function Chat(props: { apiKeyApp: string }) {
 	useEffect(() => {
 		localStorage.setItem('chatHistory', JSON.stringify(chatHistory));
 	}, [chatHistory]);
-
-
-
-	const clearChatHistory = () => {
-    localStorage.removeItem('chatHistory');
-    setChatHistory([]);
-	}
-	
-
-	const handleCopy = (text) => {
-			navigator.clipboard.writeText(text)
-					.then(() => {
-							alert('Text copied to clipboard!');
-					})
-					.catch(err => {
-							alert('Failed to copy text. Try manually.');
-							console.error('Failed to copy text: ', err);
-					});
-	};
-
-
-	const handleChat = async () => {
-			const apiKey = apiKeyApp;
-			setInputOnSubmit(inputCode);
-
-			const maxCodeLength = model === 'gpt-3.5-turbo' ? 60000 : 60000;
-
-			if (!apiKeyApp?.includes('sk-') && !apiKey?.includes('sk-')) {
-					alert('Please enter an API key.');
-					return;
-			}
-
-			if (!inputCode) {
-					alert('Please enter your message.');
-					return;
-			}
-
-			if (inputCode.length > maxCodeLength) {
-					alert(
-							`Please enter code less than ${maxCodeLength} characters. You are currently at ${inputCode.length} characters.`,
-					);
-					return;
-			}
-
-			setChatHistory([...chatHistory, { type: 'user', message: inputCode }]);
-			setLoading(true);
-
-
-			if (inputCode.startsWith('/command')) {
-				handleCommands(inputCode);
-				return; 
-			}
-
-			const controller = new AbortController();
-			const body: ChatBody = {
-					inputCode,
-					model,
-					apiKey,
-			};
-
-			const response = await fetch('/api/chatAPI', {
-					method: 'POST',
-					headers: {
-							'Content-Type': 'application/json',
-					},
-					signal: controller.signal,
-					body: JSON.stringify(body),
-			});
-
-			if (!response.ok) {
-					setLoading(false);
-					alert(
-							'Something went wrong went fetching from the API. Make sure to use a valid API key.',
-					);
-					return;
-			}
-
-			const data = response.body;
-
-			if (!data) {
-					setLoading(false);
-					alert('Something went wrong');
-					return;
-			}
-
-			const reader = data.getReader();
-			const decoder = new TextDecoder();
-
-			let fullResponse = "";
-
-			// Add a temporary bot message that we'll update in real-time
-			const tmpBotMessage = { type: 'bot', message: '' };
-			setChatHistory(prev => [...prev, tmpBotMessage]);
-
-			while (true) {
-					const { value, done } = await reader.read();
-					if (done) break;
-
-					const chunkValue = decoder.decode(value);
-					fullResponse += chunkValue;
-
-					// Update the temporary bot message in real-time
-					tmpBotMessage.message = fullResponse;
-					setChatHistory(prev => [...prev.slice(0, -1), tmpBotMessage]); // overwrite last message
-			}
-
-			setLoading(false);
-			setInputCode('');  // Clear the input value
-	};
-
 
 
 	// @ts-ignore
