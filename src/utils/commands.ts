@@ -1,15 +1,34 @@
-export const handleCommands = (commandText: string): void => {
-    const commandName = commandText.split(' ')[1];
-    
-    switch (commandName) {
-        case 'CommandName1':
-            console.log('Executing CommandName1');
-            break;
-        case 'CommandName2':
-            console.log('Executing CommandName2');
-            break;
-        // ... add more cases as required
-        default:
-            console.log('Unknown command');
-    }
+export const commands = [
+  {
+    name: 'list',
+    description: 'Lists all available commands',
+  },
+	{
+    name: 'clearChat',
+    description: 'Clears the chat history',
+  },
+];
+
+export const handleCommands = (
+  commandText: string,
+  setLoading: (loading: boolean) => void,
+  addBotMessageToChatHistory: (message: string) => void,
+  clearChatHistory: () => void
+) => {
+  const commandName = commandText.split(' ')[1];
+
+  switch (commandName) {
+    case 'clearChat':
+      clearChatHistory();
+      break;
+    case 'list':
+      addBotMessageToChatHistory(
+        commands.map((command) => `${command.name}: ${command.description}`).join('\n')
+      );
+      break;
+    default:
+      addBotMessageToChatHistory('Unknown command');
+  }
+
+  setLoading(false);
 };

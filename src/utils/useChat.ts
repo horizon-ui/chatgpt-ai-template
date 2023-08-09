@@ -30,6 +30,14 @@ export const useChat = (apiKeyApp: string) => {
         setChatHistory([]);
     }
 
+    const addUserMessageToChatHistory = (message: string) => {
+        setChatHistory(prev => [...prev, { type: 'user', message }]);
+    };
+    
+    const addBotMessageToChatHistory = (message: string) => {
+        setChatHistory(prev => [...prev, { type: 'bot', message }]);
+    };    
+
     const handleChat = async () => {
         const apiKey = apiKeyApp;
         setInputOnSubmit(inputCode);
@@ -53,12 +61,13 @@ export const useChat = (apiKeyApp: string) => {
                 return;
         }
 
-        setChatHistory([...chatHistory, { type: 'user', message: inputCode }]);
+        addUserMessageToChatHistory(inputCode);
         setLoading(true);
 
 
         if (inputCode.startsWith('/command')) {
-            handleCommands(inputCode);
+            handleCommands(inputCode, setLoading, addBotMessageToChatHistory, clearChatHistory);
+            setInputCode('');
             return; 
         }
 
@@ -101,7 +110,7 @@ export const useChat = (apiKeyApp: string) => {
 
         // Add a temporary bot message that we'll update in real-time
         const tmpBotMessage = { type: 'bot', message: '' };
-        setChatHistory(prev => [...prev, tmpBotMessage]);
+        addBotMessageToChatHistory(tmpBotMessage.message);
 
         while (true) {
                 const { value, done } = await reader.read();
@@ -112,11 +121,11 @@ export const useChat = (apiKeyApp: string) => {
 
                 // Update the temporary bot message in real-time
                 tmpBotMessage.message = fullResponse;
-                setChatHistory(prev => [...prev.slice(0, -1), tmpBotMessage]); // overwrite last message
+                setChatHistory(prev => [...prev.slice(0, -1), tmpBotMessage]);
         }
 
         setLoading(false);
-        setInputCode('');  // Clear the input value
+        setInputCode('');
     };
 
     return {
@@ -133,6 +142,8 @@ export const useChat = (apiKeyApp: string) => {
         loading, 
         setLoading, 
         clearChatHistory, 
-        handleChat
+        handleChat,
+        addUserMessageToChatHistory,
+        addBotMessageToChatHistory,
     };
 }
