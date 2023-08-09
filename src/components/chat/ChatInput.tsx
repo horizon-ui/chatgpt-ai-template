@@ -7,7 +7,7 @@ import {
 	useColorModeValue,
 } from '@chakra-ui/react';
 
-const ChatInput = ({ inputCode, setInputCode, handleTranslate, loading }) => {
+const ChatInput = ({ inputCode, setInputCode, handleChat, loading }) => {
 		const borderColor = useColorModeValue('gray.200', 'whiteAlpha.200');
 		const inputColor = useColorModeValue('navy.700', 'white');
 		const placeholderColor = useColorModeValue(
@@ -17,7 +17,7 @@ const ChatInput = ({ inputCode, setInputCode, handleTranslate, loading }) => {
 		const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
 			if (e.key === 'Enter') {
 					e.preventDefault();
-					handleTranslate();
+					handleChat();
 			}
 		}
 		const handleChange = (Event: any) => {
@@ -73,7 +73,7 @@ const ChatInput = ({ inputCode, setInputCode, handleTranslate, loading }) => {
 						},
 					}}
 					isLoading={loading ? true : false}
-					onClick={handleTranslate}
+					onClick={handleChat}
 				>
 					Submit
 				</Button>

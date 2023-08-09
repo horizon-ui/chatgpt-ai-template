@@ -6,6 +6,7 @@ import MessageBoxChat from '@/components/MessageBox';
 import ModelChange from '@/components/chat/ModelChange';
 import ChatInput from '@/components/chat/ChatInput';
 import ChatHistory from '@/components/chat/ChatHistory';
+
 import { ChatBody, OpenAIModel } from '@/types/types';
 import {
 	Accordion,
@@ -28,6 +29,7 @@ import { MdAutoAwesome, MdBolt, MdEdit, MdPerson, MdContentCopy, MdFileCopy } fr
 import Bg from '../public/img/chat/bg-image.png';
 import ReactMarkdown from 'react-markdown'
 import { Typography, Table, TableBody, TableCell, TableHead, TableRow, Paper, makeStyles } from '@material-ui/core';
+import { handleCommands } from '@/utils/commands';
 
 export default function Chat(props: { apiKeyApp: string }) {
 	const { apiKeyApp } = props;
@@ -90,7 +92,7 @@ export default function Chat(props: { apiKeyApp: string }) {
 	};
 
 
-	const handleTranslate = async () => {
+	const handleChat = async () => {
 			const apiKey = apiKeyApp;
 			setInputOnSubmit(inputCode);
 
@@ -115,6 +117,13 @@ export default function Chat(props: { apiKeyApp: string }) {
 
 			setChatHistory([...chatHistory, { type: 'user', message: inputCode }]);
 			setLoading(true);
+
+
+			if (inputCode.startsWith('/command')) {
+				handleCommands(inputCode);
+				return; 
+			}
+
 			const controller = new AbortController();
 			const body: ChatBody = {
 					inputCode,
@@ -203,7 +212,7 @@ export default function Chat(props: { apiKeyApp: string }) {
 				<ChatInput
 					inputCode={inputCode}
 					setInputCode={setInputCode}
-					handleTranslate={handleTranslate}
+					handleChat={handleChat}
 					loading={loading}
 				/>
 
