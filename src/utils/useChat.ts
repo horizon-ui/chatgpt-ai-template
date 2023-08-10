@@ -12,14 +12,18 @@ export const useChat = (apiKeyApp: string) => {
     const [model, setModel] = useState<OpenAIModel>('gpt-3.5-turbo');
     const [loading, setLoading] = useState<boolean>(false);
 
-    useEffect(() => {
-        if (typeof window !== 'undefined') {
-            const savedChatHistory = localStorage.getItem('chatHistory');
-            if (savedChatHistory) {
-                setChatHistory(JSON.parse(savedChatHistory));
-            }
-        }
-    }, []);
+	useEffect(() => {
+		if (typeof window !== 'undefined') {
+			const savedChatHistory = localStorage.getItem('chatHistory');
+			if (savedChatHistory) {
+				try {
+					setChatHistory(JSON.parse(savedChatHistory));
+				} catch (error) {
+					console.error("Failed to parse chat history:", error);
+				}
+			}
+		}
+	}, []); 
 
     useEffect(() => {
         localStorage.setItem('chatHistory', JSON.stringify(chatHistory));
