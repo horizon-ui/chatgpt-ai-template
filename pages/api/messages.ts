@@ -24,11 +24,17 @@ const handleMessages = async (req: NextApiRequest, res: NextApiResponse) => {
                 res.json({ success: true });
                 break;
             case 'DELETE':
-                // Assuming you send message ID in body for simplicity
-                await Message.destroy({
-                    where: { id: req.body.id }
-                });
-                res.json({ success: true });
+                // Check if it's a truncate operation based on query parameter
+                if (req.query.truncate === 'true') {
+                    await Message.truncate();
+                    res.json({ success: true });
+                } else {
+                    // Handle regular delete action
+                    await Message.destroy({
+                        where: { id: req.body.id }
+                    });
+                    res.json({ success: true });
+                }
                 break;
             default:
                 res.status(405).end(); // Method not allowed
@@ -39,5 +45,6 @@ const handleMessages = async (req: NextApiRequest, res: NextApiResponse) => {
         res.status(500).json({ error: "Internal Server Error" });
     }
 };
+
 
 export default handleMessages;

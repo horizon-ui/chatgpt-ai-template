@@ -36,10 +36,24 @@ export const useChat = (apiKeyApp: string) => {
         localStorage.setItem('chatHistory', JSON.stringify(chatHistory));
     }, [chatHistory]);
 
-    const clearChatHistory = () => {
-        localStorage.removeItem('chatHistory');
-        setChatHistory([]);
+    const clearChatHistory = async () => {
+        try {
+            const response = await fetch('/api/messages?truncate=true', {
+                method: 'DELETE'
+            });
+    
+            if (!response.ok) {
+                throw new Error('Failed to truncate chat history.');
+            }
+            
+            setChatHistory([]);
+        } catch (error) {
+            console.error("Error clearing chat history:", error);
+            // Here, you can handle any additional error logging or UI feedback.
+        }
     };
+    
+
     const addMessageToChatHistory = (type: 'user' | 'bot', message: string) => {
         const id = uuidv4(); 
         const newMessage = { id, type, message };

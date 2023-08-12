@@ -19,6 +19,18 @@ export class Message extends Model {
             order: [['createdAt', 'ASC']]
         });
     }
+
+    static async truncate(): Promise<void> {
+        return super.destroy({
+            truncate: true
+        });
+    }
+    
+    static async destroyById(id: string): Promise<number> {
+        return super.destroy({
+            where: { id }
+        });
+    }    
     
 }
 
