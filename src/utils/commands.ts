@@ -17,12 +17,29 @@ export const commands = [
   },
 ];
 
-let apiKey: string | null = localStorage.getItem('apiKey');
+let apiKey: string | null = getApiKeyFromLocalStorage();
 
 export const setApiKey = (key: string) => {
   apiKey = key;
-  localStorage.setItem('apiKey', key);
+  saveApiKeyToLocalStorage(key);
 };
+
+function getApiKeyFromLocalStorage(): string | null {
+  try {
+    return localStorage.getItem('apiKey');
+  } catch (error) {
+    // Handle error or fallback behavior if localStorage is not available
+    return null;
+  }
+}
+
+function saveApiKeyToLocalStorage(key: string) {
+  try {
+    localStorage.setItem('apiKey', key);
+  } catch (error) {
+    // Handle error or fallback behavior if localStorage is not available
+  }
+}
 
 export const handleCommands = (
   commandText: string,
