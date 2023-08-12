@@ -13,7 +13,6 @@ export const commands = [
   },
 ];
 
-
 export const handleCommands = (
   commandText: string,
   setLoading: (loading: boolean) => void,
@@ -26,15 +25,24 @@ export const handleCommands = (
     case '/clearChat':
       clearChatHistory();
       break;
-		case '/chatGPT':
-			const gptMessage = args.join(' ');
-			fetchChatGPT(gptMessage).then(response => {
-				addBotMessageToChatHistory(response);
-			}).catch(error => {
-				console.error(error.message)
-				addBotMessageToChatHistory('Error fetching from chat GPT');
-			});
-			break;
+    case '/chatGPT':
+      const gptMessage = args.join(' ');
+      const apiKey = localStorage.getItem('apiKey');
+
+      if (!apiKey) {
+        addBotMessageToChatHistory('API key not found in localStorage');
+        break;
+      }
+
+      fetchChatGPT(gptMessage, apiKey)
+        .then((response) => {
+          addBotMessageToChatHistory(response);
+        })
+        .catch((error) => {
+          console.error(error.message);
+          addBotMessageToChatHistory('Error fetching from chat GPT');
+        });
+      break;
     case '/help':
       addBotMessageToChatHistory(
         commands.map((command) => `${command.name}: ${command.description}`).join('\n')
@@ -47,19 +55,25 @@ export const handleCommands = (
   setLoading(false);
 };
 
-async function fetchChatGPT(message: string) {
-  const response = await fetch('/api/completionAPI', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ message }),
-  });
+async function fetchChatGPT(message: string, apiKey: string) {
+  try {
+    const response = await fetch('/api/completionAPI', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ prompt: message, apiKey }), // Include the message and apiKey in the request body
+    });
 
-  if (!response.ok) {
-    throw new Error('Failed to fetch chat GPT');
+    if (!response.ok) {
+      throw new Error('Failed to fetch chat GPT');
+    }
+
+    const data = await response.json();
+    return data.completion;
+  } catch (error) {
+    console.error(error);
+    throw new Error('Error fetching from chat GPT');
   }
-
-  const data = await response.json();
-  return data.response; 
 }
+
