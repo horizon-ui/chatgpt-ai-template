@@ -1,42 +1,45 @@
-import { useState, useEffect } from 'react';
 import { ChatBody, OpenAIModel } from '@/types/types';
 
-export const chatGPT = async (inputCode: string, model: string,apiKey: string, setLoading : Function, addBotMessageToChatHistory : Function, setChatHistory : Function) => {
+type BotMessage = { type: 'bot', message: string };
+
+export const chatGPT = async (
+    inputCode: string,
+    model: OpenAIModel, 
+    apiKey: string,
+    setLoading: (loading: boolean) => void,
+    addBotMessageToChatHistory: (message: string) => void,
+    setChatHistory: (callback: (prev: BotMessage[]) => BotMessage[]) => void
+) => {
     const controller = new AbortController();
-    let body: ChatBody = {
+    const body: ChatBody = {
         inputCode,
         model,
         apiKey,
     };
 
-    body = JSON.stringify(body);
-    console.log(body);
-
-
+    const serializedBody = JSON.stringify(body);
 
     const response = await fetch('/api/chatAPI', {
         method: 'POST',
         headers: {
-                'Content-Type': 'application/json',
+            'Content-Type': 'application/json',
         },
         signal: controller.signal,
-        body: body,
+        body: serializedBody,
     });
 
     if (!response.ok) {
         setLoading(false);
-        alert(
-                'Something went wrong went fetching from the API. Make sure to use a valid API key.',
-        );
+        alert('Something went wrong when fetching from the API. Make sure to use a valid API key.');
         return;
     }
 
     const data = response.body;
 
     if (!data) {
-            setLoading(false);
-            alert('Something went wrong');
-            return;
+        setLoading(false);
+        alert('Something went wrong');
+        return;
     }
 
     const reader = data.getReader();
@@ -45,19 +48,19 @@ export const chatGPT = async (inputCode: string, model: string,apiKey: string, s
     let fullResponse = "";
 
     // Add a temporary bot message that we'll update in real-time
-    const tmpBotMessage = { type: 'bot', message: '' };
+    const tmpBotMessage: BotMessage = { type: 'bot', message: '' };
     addBotMessageToChatHistory(tmpBotMessage.message);
 
     while (true) {
-            const { value, done } = await reader.read();
-            if (done) break;
+        const { value, done } = await reader.read();
+        if (done) break;
 
-            const chunkValue = decoder.decode(value);
-            fullResponse += chunkValue;
+        const chunkValue = decoder.decode(value);
+        fullResponse += chunkValue;
 
-            // Update the temporary bot message in real-time
-            tmpBotMessage.message = fullResponse;
-            setChatHistory(prev => [...prev.slice(0, -1), tmpBotMessage]);
+        // Update the temporary bot message in real-time
+        tmpBotMessage.message = fullResponse;
+        setChatHistory(prev => [...prev.slice(0, -1), tmpBotMessage]);
     }
 
     setLoading(false);

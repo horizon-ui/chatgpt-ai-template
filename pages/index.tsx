@@ -28,7 +28,7 @@ import { useEffect, useState } from 'react';
 import { MdAutoAwesome, MdBolt, MdEdit, MdPerson, MdContentCopy, MdFileCopy } from 'react-icons/md'; 
 import Bg from '../public/img/chat/bg-image.png';
 import ReactMarkdown from 'react-markdown'
-import { Typography, Table, TableBody, TableCell, TableHead, TableRow, Paper, makeStyles } from '@material-ui/core';
+import { Typography, Table, TableBody, TableCell, TableHead, TableRow, Paper, makeStyles } from '@mui/material'; // Updated to MUI
 import { useChat } from '@/utils/useChat';
 import { handleCopy } from '@/utils/copy';
 
@@ -83,7 +83,6 @@ export default function Chat(props: { apiKeyApp: string }) {
 	useEffect(() => {
 		localStorage.setItem('chatHistory', JSON.stringify(chatHistory));
 	}, [chatHistory]);
-
 
 	// @ts-ignore
 		return (

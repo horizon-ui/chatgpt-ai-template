@@ -1,5 +1,4 @@
-'use client';
-// Chakra imports
+import React, { useState, ChangeEvent, KeyboardEvent, useEffect } from 'react';
 import {
   Flex,
   FormLabel,
@@ -8,49 +7,82 @@ import {
   useColorModeValue,
 } from '@chakra-ui/react';
 
-export default function Default(props: {
+interface AutocompleteInputProps {
   id?: string;
   label?: string;
   extra?: JSX.Element;
   placeholder?: string;
   type?: string;
-  [x: string]: any;
-}) {
-  const { id, label, extra, placeholder, type, mb, ...rest } = props;
+  mb?: string;
+  availableCommands: { name: string }[];
+}
+
+export default function AutocompleteInput(props: AutocompleteInputProps) {
+  const [inputValue, setInputValue] = useState('');
+  const [suggestions, setSuggestions] = useState<string[]>([]);
+  const { availableCommands } = props;
+
+  const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const value = event.target.value;
+    setInputValue(value);
+  };
+
+  const handleKeyPress = (event: KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === 'Tab') {
+      event.preventDefault(); // Prevent default Tab behavior
+      const matchingCommands = availableCommands.filter((command) =>
+        command.name.startsWith(inputValue)
+      );
+      setSuggestions(matchingCommands.map((command) => command.name));
+    }
+  };
+
+  useEffect(() => {
+    if (suggestions.length > 0) {
+      const selectedIndex = suggestions.findIndex((command) => command === inputValue);
+      if (selectedIndex !== -1) {
+        const nextIndex = (selectedIndex + 1) % suggestions.length;
+        setInputValue(suggestions[nextIndex]);
+      }
+    }
+  }, [suggestions, inputValue]);
+
   // Chakra Color Mode
   const textColorPrimary = useColorModeValue('navy.700', 'white');
   const searchColor = useColorModeValue('gray.700', 'white');
   const inputBg = useColorModeValue('transparent', 'navy.800');
   const placeholderColor = useColorModeValue(
     { color: 'gray.500' },
-    { color: 'whiteAlpha.600' },
+    { color: 'whiteAlpha.600' }
   );
 
   return (
-    <Flex direction="column" mb={mb ? mb : '30px'}>
+    <Flex direction="column" mb={props.mb ? props.mb : '30px'}>
       <FormLabel
         display="flex"
         ms="10px"
-        htmlFor={id}
+        htmlFor={props.id}
         fontSize="sm"
         color={textColorPrimary}
         fontWeight="bold"
         _hover={{ cursor: 'pointer' }}
       >
-        {label}
+        {props.label}
         <Text fontSize="sm" fontWeight="400" ms="2px">
-          {extra}
+          {props.extra}
         </Text>
       </FormLabel>
       <Input
-        {...rest}
-        type={type}
-        id={id}
+        {...props}
+        id={props.id}
         fontWeight="500"
         bg={inputBg}
         variant="main"
         fontSize="sm"
-        placeholder={placeholder}
+        value={inputValue}
+        onChange={handleInputChange}
+        onKeyDown={handleKeyPress}
+        placeholder={props.placeholder}
         _placeholder={placeholderColor}
         border="1px solid"
         color={searchColor}
