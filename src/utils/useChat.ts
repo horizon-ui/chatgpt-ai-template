@@ -69,7 +69,7 @@ export const useChat = (apiKeyApp: string) => {
         setLoading(true);
 
 
-        if (inputCode.startsWith('/command')) {
+        if (inputCode.startsWith('/')) {
             handleCommands(inputCode, setLoading, addBotMessageToChatHistory, clearChatHistory);
             setInputCode('');
             return; 
