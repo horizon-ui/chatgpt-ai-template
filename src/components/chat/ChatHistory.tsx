@@ -20,6 +20,7 @@ import {
   import ReactMarkdown from "react-markdown";
   import { PrismAsyncLight as SyntaxHighlighter } from 'react-syntax-highlighter';
   import { dracula } from 'react-syntax-highlighter/dist/cjs/styles/prism';
+  import { isValidElement } from 'react';
   
   type ChatType = {
 	type: 'user' | 'bot';
@@ -28,8 +29,11 @@ import {
   
   type CodeComponentProps = {
 	inline?: boolean;
-	children: React.ReactNode;
+	language?: string;
+	value?: string;
+	children?: React.ReactNode;
   };
+  
   
   const ChatHistory = ({ chatHistory, handleCopy }: any) => {
 	const borderColor = useColorModeValue('gray.200', 'whiteAlpha.200');
@@ -47,27 +51,37 @@ import {
 	  td: Td,
 	  tr: Tr,
 	  code: ({ inline, children, ...props }: CodeComponentProps) => {
-		if (!children || (typeof children === 'string' && !children.trim())) {
-		  return null;
+		// Extracting the content from children
+		const content = Array.isArray(children) 
+			? children[0]
+			: children;
+	  
+		console.log('Extracted content:', content);
+	  
+		if (!content) {
+			return <Text>Error displaying code.</Text>;
 		}
-  
+	  
+		// Handle inline code
 		if (inline) {
-		  return <Text as="code" px={1} bgColor="gray.200" borderRadius="md" {...props}>{children}</Text>;
+			return <Text as="code" px={1} bgColor="gray.200" borderRadius="md" {...props}>{content}</Text>;
 		}
-  
-		const content = typeof children === 'string' ? children : '...';
-  
+	  
+		// Handle block code
 		return (
-		  <Box position="relative" my={4} {...props}>
-			<Flex justifyContent="space-between" alignItems="center" borderBottom="1px solid" borderColor="gray.300" pb={1}>
-			  <Icon as={MdFileCopy} onClick={() => handleCopy(content)} cursor="pointer" />
-			</Flex>
-			<SyntaxHighlighter style={dracula} language="php">
-			  {content}
-			</SyntaxHighlighter>
-		  </Box>
+			<Box position="relative" my={4} {...props}>
+				<Flex justifyContent="space-between" alignItems="center" borderBottom="1px solid" borderColor="gray.300" pb={1}>
+					<Icon as={MdFileCopy} onClick={() => handleCopy(content)} cursor="pointer" />
+				</Flex>
+				<SyntaxHighlighter style={dracula} language="javascript">
+					{content}
+				</SyntaxHighlighter>
+			</Box>
 		);
 	  }
+	  
+	
+	  
 	};
   
 	return (
