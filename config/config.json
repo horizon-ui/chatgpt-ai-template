@@ -1,0 +1,23 @@
+{
+  "development": {
+    "username": "user",
+    "password": "password",
+    "database": "dev",
+    "host": "chatdb",
+    "dialect": "mysql"
+  },
+  "test": {
+    "username": "user",
+    "password": "password",
+    "database": "dev",
+    "host": "chatdb",
+    "dialect": "mysql"
+  },
+  "production": {
+    "username": "user",
+    "password": "password",
+    "database": "dev",
+    "host": "chatdb",
+    "dialect": "mysql"
+  }
+}

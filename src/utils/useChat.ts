@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { ChatBody, OpenAIModel } from '@/types/types';
 import { handleCommands } from '@/utils/commands';
+import { createUserMessage, createBotMessage, getAllMessages, updateMessage } from './messages';
 import { v4 as uuidv4 } from 'uuid';
 
 export const useChat = (apiKeyApp: string) => {
@@ -12,17 +13,24 @@ export const useChat = (apiKeyApp: string) => {
     const [loading, setLoading] = useState<boolean>(false);
 
     useEffect(() => {
-        if (typeof window !== 'undefined') {
-            const savedChatHistory = localStorage.getItem('chatHistory');
-            if (savedChatHistory) {
+        const fetchChatHistory = async () => {
                 try {
-                    setChatHistory(JSON.parse(savedChatHistory));
+                    const messages = await getAllMessages();
+                    console.log(messages)
+                    if (Array.isArray(messages)) {
+                        setChatHistory(messages);
+                    } else {
+                        setChatHistory([]);
+                    }
                 } catch (error) {
-                    console.error("Failed to parse chat history:", error);
+                    console.error("Failed to fetch chat history from API:", error);
+                    setChatHistory([]); // Default to empty array in case of error
                 }
-            }
-        }
+            };
+    
+        fetchChatHistory();
     }, []);
+    
 
     useEffect(() => {
         localStorage.setItem('chatHistory', JSON.stringify(chatHistory));
@@ -47,12 +55,35 @@ export const useChat = (apiKeyApp: string) => {
     };
     
 
-    const addUserMessageToChatHistory = (message: string) => {
-        return addMessageToChatHistory('user', message);
+    const addUserMessageToChatHistory = async (message: string) => {
+        try {
+            const savedMessage = await createUserMessage(message);
+            // assuming your API returns the saved message with its ID and content
+            const newMessage = {
+                id: savedMessage.id, 
+                type: 'user', 
+                message: savedMessage.message
+            };
+            setChatHistory(prev => [...prev, newMessage]);
+            return savedMessage.id;
+        } catch (error) {
+            console.error("Error adding user message:", error);
+        }
     };
-
-    const addBotMessageToChatHistory = (message: string) => {
-        return addMessageToChatHistory('bot', message);
+    
+    const addBotMessageToChatHistory = async (message: string) => {
+        try {
+            const savedMessage = await createBotMessage(message);
+            const newMessage = {
+                id: savedMessage.id, 
+                type: 'bot', 
+                message: savedMessage.message
+            };
+            setChatHistory(prev => [...prev, newMessage]);
+            return savedMessage.id;
+        } catch (error) {
+            console.error("Error adding bot message:", error);
+        }
     };
     
 
@@ -80,8 +111,9 @@ export const useChat = (apiKeyApp: string) => {
                 return;
         }
 
-        addUserMessageToChatHistory(inputCode);
+
         setLoading(true);
+        await addUserMessageToChatHistory(inputCode); 
 
         if (inputCode.startsWith('/')) {
             handleCommands(inputCode, setLoading, addBotMessageToChatHistory, clearChatHistory);
@@ -126,12 +158,7 @@ export const useChat = (apiKeyApp: string) => {
 
         let fullResponse = "";
 
-        const tmpBotMessage: { id: string; type: "bot" | "user"; message: string; } = {
-                id: addBotMessageToChatHistory(''), 
-                type: 'bot',
-                message: '',
-            };
-        let id = tmpBotMessage.id;
+        const id = await addBotMessageToChatHistory('<Loading>')
     
         while (true) {
             const { value, done } = await reader.read();
@@ -142,6 +169,7 @@ export const useChat = (apiKeyApp: string) => {
             updateMessageById(id, fullResponse);
         }
         updateMessageById(id, fullResponse);
+        await updateMessage(id, fullResponse);
 
         setLoading(false);
         setInputCode('');
