@@ -1,29 +1,28 @@
-// useChat.ts
-
 import { useState, useEffect } from 'react';
 import { ChatBody, OpenAIModel } from '@/types/types';
 import { handleCommands } from '@/utils/commands';
+import { v4 as uuidv4 } from 'uuid';
 
 export const useChat = (apiKeyApp: string) => {
-    const [chatHistory, setChatHistory] = useState<Array<{type: 'user' | 'bot', message: string}>>([]);
+    const [chatHistory, setChatHistory] = useState<Array<{ id: string; type: 'user' | 'bot'; message: string }>>([]);
     const [inputOnSubmit, setInputOnSubmit] = useState<string>('');
     const [inputCode, setInputCode] = useState<string>('');
     const [outputCode, setOutputCode] = useState<string>('');
     const [model, setModel] = useState<OpenAIModel>('gpt-3.5-turbo');
     const [loading, setLoading] = useState<boolean>(false);
 
-	useEffect(() => {
-		if (typeof window !== 'undefined') {
-			const savedChatHistory = localStorage.getItem('chatHistory');
-			if (savedChatHistory) {
-				try {
-					setChatHistory(JSON.parse(savedChatHistory));
-				} catch (error) {
-					console.error("Failed to parse chat history:", error);
-				}
-			}
-		}
-	}, []); 
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            const savedChatHistory = localStorage.getItem('chatHistory');
+            if (savedChatHistory) {
+                try {
+                    setChatHistory(JSON.parse(savedChatHistory));
+                } catch (error) {
+                    console.error("Failed to parse chat history:", error);
+                }
+            }
+        }
+    }, []);
 
     useEffect(() => {
         localStorage.setItem('chatHistory', JSON.stringify(chatHistory));
@@ -32,17 +31,33 @@ export const useChat = (apiKeyApp: string) => {
     const clearChatHistory = () => {
         localStorage.removeItem('chatHistory');
         setChatHistory([]);
-    }
-
-    const addUserMessageToChatHistory = (message: string) => {
-        setChatHistory(prev => [...prev, { type: 'user', message }]);
+    };
+    const addMessageToChatHistory = (type: 'user' | 'bot', message: string) => {
+        const id = uuidv4(); 
+        const newMessage = { id, type, message };
+        setChatHistory(prev => [...prev, newMessage]);
+        return id; 
     };
     
+
+    const updateMessageById = (id: string, updatedMessage: string) => {
+        setChatHistory(prev =>
+            prev.map(message => (message.id === id ? { ...message, message: updatedMessage } : message))
+        );
+    };
+    
+
+    const addUserMessageToChatHistory = (message: string) => {
+        return addMessageToChatHistory('user', message);
+    };
+
     const addBotMessageToChatHistory = (message: string) => {
-        setChatHistory(prev => [...prev, { type: 'bot', message }]);
-    };    
+        return addMessageToChatHistory('bot', message);
+    };
+    
 
     const handleChat = async () => {
+        setInputOnSubmit(inputCode);
         const apiKey = apiKeyApp;
         setInputOnSubmit(inputCode);
 
@@ -111,21 +126,22 @@ export const useChat = (apiKeyApp: string) => {
 
         let fullResponse = "";
 
-        // Add a temporary bot message that we'll update in real-time
-        const tmpBotMessage: { type: "bot" | "user"; message: string; } = { type: 'bot', message: '' };
-        addBotMessageToChatHistory(tmpBotMessage.message);
-
+        const tmpBotMessage: { id: string; type: "bot" | "user"; message: string; } = {
+                id: addBotMessageToChatHistory(''), 
+                type: 'bot',
+                message: '',
+            };
+        let id = tmpBotMessage.id;
+    
         while (true) {
-                const { value, done } = await reader.read();
-                if (done) break;
-
-                const chunkValue = decoder.decode(value);
-                fullResponse += chunkValue;
-
-                // Update the temporary bot message in real-time
-                tmpBotMessage.message = fullResponse;
-                setChatHistory(prev => [...prev.slice(0, -1), tmpBotMessage]);
+            const { value, done } = await reader.read();
+            if (done) break;
+    
+            const chunkValue = await decoder.decode(value);
+            fullResponse += chunkValue;
+            updateMessageById(id, fullResponse);
         }
+        updateMessageById(id, fullResponse);
 
         setLoading(false);
         setInputCode('');
