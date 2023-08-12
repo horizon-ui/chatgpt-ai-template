@@ -14,11 +14,12 @@
     "@chakra-ui/system": "^1.12.1",
     "@chakra-ui/theme-tools": "^1.3.6",
     "@codemirror/legacy-modes": "^6.3.2",
-    "@emotion/react": "^11.4.1",
-    "@emotion/styled": "^11.3.0",
+    "@emotion/react": "^11.11.1",
+    "@emotion/styled": "^11.11.0",
     "@heroicons/react": "^2.0.17",
     "@material-tailwind/react": "^1.4.2",
-    "@material-ui/core": "^4.12.4",
+    "@mui/icons-material": "^5.14.3",
+    "@mui/material": "^5.14.4",
     "@tanstack/react-table": "^8.5.15",
     "@testing-library/jest-dom": "^5.14.1",
     "@testing-library/react": "^11.2.7",
@@ -49,7 +50,6 @@
     "web-vitals": "^1.1.2"
   },
   "devDependencies": {
-    "@types/next": "^9.0.0",
     "@types/node": "18.15.11",
     "@types/react": "18.0.31",
     "@types/react-dom": "18.0.11",

@@ -68,7 +68,6 @@ export const useChat = (apiKeyApp: string) => {
         addUserMessageToChatHistory(inputCode);
         setLoading(true);
 
-
         if (inputCode.startsWith('/')) {
             handleCommands(inputCode, setLoading, addBotMessageToChatHistory, clearChatHistory);
             setInputCode('');
@@ -113,7 +112,7 @@ export const useChat = (apiKeyApp: string) => {
         let fullResponse = "";
 
         // Add a temporary bot message that we'll update in real-time
-        const tmpBotMessage = { type: 'bot', message: '' };
+        const tmpBotMessage: { type: "bot" | "user"; message: string; } = { type: 'bot', message: '' };
         addBotMessageToChatHistory(tmpBotMessage.message);
 
         while (true) {
