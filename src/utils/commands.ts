@@ -11,7 +11,18 @@ export const commands = [
     name: 'chatGPT',
     description: 'Fetches a response from chat GPT',
   },
+	{
+    name: 'commit',
+    description: 'Generates a commit message',
+  },
 ];
+
+let apiKey: string | null = localStorage.getItem('apiKey');
+
+export const setApiKey = (key: string) => {
+  apiKey = key;
+  localStorage.setItem('apiKey', key);
+};
 
 export const handleCommands = (
   commandText: string,
@@ -21,28 +32,24 @@ export const handleCommands = (
 ) => {
   const [commandName, ...args] = commandText.split(' ');
 
+  if (apiKey === null) {
+    addBotMessageToChatHistory('API key not found');
+    setLoading(false);
+    return;
+  }
+
   switch (commandName) {
     case '/clearChat':
       clearChatHistory();
       break;
     case '/chatGPT':
       const gptMessage = args.join(' ');
-      const apiKey = localStorage.getItem('apiKey');
-
-      if (!apiKey) {
-        addBotMessageToChatHistory('API key not found in localStorage');
-        break;
-      }
-
-      fetchChatGPT(gptMessage, apiKey)
-        .then((response) => {
-          addBotMessageToChatHistory(response);
-        })
-        .catch((error) => {
-          console.error(error.message);
-          addBotMessageToChatHistory('Error fetching from chat GPT');
-        });
+      fetchAndAddGPTResponse(gptMessage, addBotMessageToChatHistory);
       break;
+		case '/commit':
+				const commitMessage = "Generate a short commit message with one emoji at the beginning for the following changes " + args.join(' ');
+				fetchAndAddGPTResponse(commitMessage, addBotMessageToChatHistory);
+				break;
     case '/help':
       addBotMessageToChatHistory(
         commands.map((command) => `${command.name}: ${command.description}`).join('\n')
@@ -55,7 +62,10 @@ export const handleCommands = (
   setLoading(false);
 };
 
-async function fetchChatGPT(message: string, apiKey: string) {
+export async function fetchAndAddGPTResponse(
+  message: string,
+  addBotMessageToChatHistory: (message: string) => void
+) {
   try {
     const response = await fetch('/api/completionAPI', {
       method: 'POST',
@@ -70,10 +80,10 @@ async function fetchChatGPT(message: string, apiKey: string) {
     }
 
     const data = await response.json();
-    return data.completion;
+    const completion = data.completion;
+    addBotMessageToChatHistory(completion);
   } catch (error) {
     console.error(error);
-    throw new Error('Error fetching from chat GPT');
+    addBotMessageToChatHistory('Error fetching from chat GPT');
   }
 }
-
