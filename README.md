@@ -5,7 +5,7 @@
 
 <p>&nbsp;</p>
 
-[<img alt="Horizon UI - Tailwind CSS React Admin dashboard template" src="https://i.ibb.co/Qmym1qt/horizon-ai-template-presentation-image-open-source.png" />](https://horizon-ui.com/ai-template)
+[<img alt="Horizon UI - Tailwind CSS React Admin dashboard template" src="https://i.ibb.co/mqnbX1Y/horizon-ai-template-presentation-image-open-source.png" />](https://horizon-ui.com/ai-template)
 
 <p>&nbsp;</p>
 
