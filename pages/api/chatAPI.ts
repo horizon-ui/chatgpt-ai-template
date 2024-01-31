@@ -13,7 +13,7 @@ const handler = async (req: Request): Promise<Response> => {
     if (apiKey) {
       apiKeyFinal = apiKey;
     } else {
-      apiKeyFinal = process.env.NEXT_PUBLIC_OPENAI_API_KEY;
+      apiKeyFinal = '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';
     }
 
     if (!apiKey) {
