@@ -30,7 +30,7 @@ export default function Chat(props: { apiKeyApp: string }) {
   // Response message
   const [outputCode, setOutputCode] = useState<string>('');
   // ChatGPT model
-  const [model, setModel] = useState<OpenAIModel>('gpt-3.5-turbo');
+  const [model, setModel] = useState<OpenAIModel>('gpt-4o');
   // Loading state
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -60,7 +60,7 @@ export default function Chat(props: { apiKeyApp: string }) {
     setInputOnSubmit(inputCode);
 
     // Chat post conditions(maximum number of characters, valid message etc.)
-    const maxCodeLength = model === 'gpt-3.5-turbo' ? 700 : 700;
+    const maxCodeLength = model === 'gpt-4o' ? 700 : 700;
 
     if (!apiKey?.includes('sk-')) {
       alert('Please enter an API key.');
@@ -188,8 +188,41 @@ export default function Chat(props: { apiKeyApp: string }) {
               transition="0.3s"
               justify={'center'}
               align="center"
-              bg={model === 'gpt-3.5-turbo' ? buttonBg : 'transparent'}
+              bg={model === 'gpt-4o' ? buttonBg : 'transparent'}
               w="174px"
+              h="70px"
+              boxShadow={model === 'gpt-4o' ? buttonShadow : 'none'}
+              borderRadius="14px"
+              color={textColor}
+              fontSize="18px"
+              fontWeight={'700'}
+              onClick={() => setModel('gpt-4o')}
+            >
+              <Flex
+                borderRadius="full"
+                justify="center"
+                align="center"
+                bg={bgIcon}
+                me="10px"
+                h="39px"
+                w="39px"
+              >
+                <Icon
+                  as={MdAutoAwesome}
+                  width="20px"
+                  height="20px"
+                  color={iconColor}
+                />
+              </Flex>
+              GPT-4o
+            </Flex>
+            <Flex
+              cursor={'pointer'}
+              transition="0.3s"
+              justify={'center'}
+              align="center"
+              bg={model === 'gpt-3.5-turbo' ? buttonBg : 'transparent'}
+              w="164px"
               h="70px"
               boxShadow={model === 'gpt-3.5-turbo' ? buttonShadow : 'none'}
               borderRadius="14px"
@@ -208,46 +241,13 @@ export default function Chat(props: { apiKeyApp: string }) {
                 w="39px"
               >
                 <Icon
-                  as={MdAutoAwesome}
-                  width="20px"
-                  height="20px"
-                  color={iconColor}
-                />
-              </Flex>
-              GPT-3.5
-            </Flex>
-            <Flex
-              cursor={'pointer'}
-              transition="0.3s"
-              justify={'center'}
-              align="center"
-              bg={model === 'gpt-4' ? buttonBg : 'transparent'}
-              w="164px"
-              h="70px"
-              boxShadow={model === 'gpt-4' ? buttonShadow : 'none'}
-              borderRadius="14px"
-              color={textColor}
-              fontSize="18px"
-              fontWeight={'700'}
-              onClick={() => setModel('gpt-4')}
-            >
-              <Flex
-                borderRadius="full"
-                justify="center"
-                align="center"
-                bg={bgIcon}
-                me="10px"
-                h="39px"
-                w="39px"
-              >
-                <Icon
                   as={MdBolt}
                   width="20px"
                   height="20px"
                   color={iconColor}
                 />
               </Flex>
-              GPT-4
+              GPT-3.5
             </Flex>
           </Flex>
 
