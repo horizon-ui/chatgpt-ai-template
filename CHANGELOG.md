@@ -1,6 +1,10 @@
 # Changelog
 
-## [3.0.0] 2024-06-28
+## [2.2.0] 2024-07-19
+
+### Vulnerabilities removed
+
+## [2.1.0] 2024-06-28
 
 ### GPT-4o Support
 
