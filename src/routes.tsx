@@ -21,6 +21,14 @@ const routes: IRoute[] = [
 
   // --- Main Pages ---
   {
+    name: 'Home',
+    path: '/',
+    icon: (
+      <Icon as={MdHome} width="20px" height="20px" color="inherit" />
+    ),
+    collapse: false,
+  },
+  {
     name: 'Olivia, Andrew, Me',
     path: '/conversation/test_conversation',
     icon: (
