@@ -22,7 +22,7 @@ const routes: IRoute[] = [
   // --- Main Pages ---
   {
     name: 'Olivia, Andrew, Me',
-    path: '/',
+    path: '/conversation/test_conversation',
     icon: (
       <Icon as={MdMessage} width="20px" height="20px" color="inherit" />
     ),
