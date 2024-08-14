@@ -33,6 +33,7 @@
     "eventsource-parser": "^1.0.0",
     "framer-motion": "^4.1.17",
     "next": "14.0.2",
+    "next-cookies": "^2.0.3",
     "react": "18.2.0",
     "react-build-sitemap": "^0.2.2",
     "react-custom-scrollbars-2": "^4.2.1",
