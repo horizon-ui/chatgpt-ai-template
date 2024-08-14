@@ -14,8 +14,12 @@ import {
 import { useState, useEffect } from 'react';
 import AdminNavbarLinks from './NavbarLinksAdmin';
 import { isWindowAvailable } from '@/utils/navigation';
+import { IRoute } from '@/types/navigation';
+
+
 
 export default function AdminNavbar(props: {
+  routes: IRoute[];
   secondary: boolean;
   brandText: string;
   logoText: string;
@@ -32,7 +36,7 @@ export default function AdminNavbar(props: {
     };
   });
 
-  const { secondary, brandText, setApiKey } = props;
+  const { routes, secondary, brandText, setApiKey } = props;
 
   // Here are all the props that may change depending on navbar's type or state.(secondary, variant, scrolled)
   let mainText = useColorModeValue('purple.700', 'white');
@@ -152,7 +156,7 @@ export default function AdminNavbar(props: {
 
         </Box>
         <Box ms="auto" w={{ sm: '100%', md: 'unset' }}>
-          <AdminNavbarLinks setApiKey={setApiKey} secondary={props.secondary} />
+          <AdminNavbarLinks setApiKey={setApiKey} secondary={props.secondary} routes={routes} />
         </Box>
       </Flex>
     </Box>

@@ -14,15 +14,16 @@ import APIModal from '@/components/apiModal';
 import ButtonInfo from '@/components/navbar/ButtonInfo'
 import ButtonColorMode from '@/components/navbar/ButtonColorMode'
 import ButtonUser from '@/components/navbar/ButtonUser'
-import routes from '@/routes';
+import { IRoute } from '@/types/navigation';
 
 
 
 export default function HeaderLinks(props: {
+  routes:    IRoute[];
   secondary: boolean;
   setApiKey: any;
 }) {
-  const { secondary, setApiKey } = props;
+  const { routes, secondary, setApiKey } = props;
   const { colorMode, toggleColorMode } = useColorMode();
 
   // Chakra Color Mode

@@ -3,10 +3,11 @@ import React, { ReactNode } from 'react';
 import type { AppProps } from 'next/app';
 import { ChakraProvider, Box, Img, Portal, useDisclosure } from '@chakra-ui/react';
 import theme from '@/theme/theme';
-import routes from '@/routes';
+import { fetchRoutes } from '@/routes';
 import Sidebar from '@/components/sidebar/Sidebar';
 import Footer from '@/components/footer/FooterAdmin';
 import Navbar from '@/components/navbar/NavbarAdmin';
+import { IRoute } from '@/types/navigation';
 import { getActiveRoute, getActiveNavbar } from '@/utils/navigation';
 import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
@@ -31,6 +32,14 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       setApiKey(initialKey);
     }
   }, [apiKey]);
+
+
+  // Once loaded, fetch the list of routes
+  const [routes, setRoutes] = useState<IRoute[]>([])
+  useEffect(() => {
+    fetchRoutes().then(routes => setRoutes(routes))
+  }, [])
+
 
   return (
     <html lang="en">
@@ -63,6 +72,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
                 <Portal>
                   <Box>
                     <Navbar
+                      routes={routes}
                       setApiKey={setApiKey}
                       onOpen={onOpen}
                       logoText={'Horizon UI Dashboard PRO'}

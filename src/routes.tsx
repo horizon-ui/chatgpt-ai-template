@@ -17,6 +17,12 @@ import { RoundedChart } from '@/components/icons/Icons';
 // Auth Imports
 import { IRoute } from './types/navigation';
 
+
+
+const APIDOMAIN = process.env.API_DOMAIN;
+
+
+
 const routes: IRoute[] = [
 
   // --- Main Pages ---
@@ -144,4 +150,57 @@ const routes: IRoute[] = [
   },
 ];
 
-export default routes;
+
+
+export async function fetchRoutes(): Promise<IRoute[]> {
+
+  // Fetch the list of conversations available to this user from the API
+  const conversations = await (
+    await fetch(
+      `${APIDOMAIN}/api/conversations`,
+      {
+        credentials: 'include',
+      }
+    )
+  ).json()
+
+  // Map the list of conversations to a list of route objects
+  const conversationRoutes = conversations.map((conversation: any) => ({
+    name: conversation.ds_key,
+    path: `/conversation/${conversation.ds_key}`,
+    icon: (
+      <Icon as={MdMessage} width="20px" height="20px" color="inherit" />
+    ),
+    collapse: false,
+  }))
+
+  // Insert the list of conversations into the routes list
+  return [
+
+    // Homepage
+    {
+      name: 'Home',
+      path: '/',
+      icon: (
+        <Icon as={MdHome} width="20px" height="20px" color="inherit" />
+      ),
+      collapse: false,
+    },
+
+    // Conversations
+    ...conversationRoutes,
+
+    // Instructions
+    {
+      name: 'Instructions',
+      path: '/instructions',
+      icon: (
+        <Icon as={IoIosHelpCircle} width="20px" height="20px" color="inherit" />
+      ),
+      collapse: false,
+    },
+  ];
+}
+
+
+export default { fetchRoutes }
