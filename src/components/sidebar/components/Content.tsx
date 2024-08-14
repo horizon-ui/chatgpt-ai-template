@@ -30,6 +30,14 @@ import { FiLogOut } from 'react-icons/fi';
 import { LuHistory } from 'react-icons/lu';
 import { MdOutlineManageAccounts, MdOutlineSettings } from 'react-icons/md';
 
+// React imports
+import { useEffect, useState } from 'react';
+
+// Cookies
+import { getCookie } from "cookies-next";
+
+
+
 // FUNCTIONS
 
 interface SidebarContent extends PropsWithChildren {
@@ -52,6 +60,19 @@ function SidebarContent(props: SidebarContent) {
     'none',
   );
   const gray = useColorModeValue('gray.500', 'white');
+
+
+  // Retrieve user data from cookie
+  const userData = JSON.parse( getCookie('userData') || '{}' )
+
+  // Load username from cookies
+  // Fill as an effect to avoid hydration error
+  const [ username, setUsername ] = useState<string>('');
+  useEffect(() => {
+    setUsername( (userData['name_first'] || ['']).join(' ') )
+  }, [])
+
+
   // SIDEBAR
   return (
     <Flex
@@ -81,7 +102,7 @@ function SidebarContent(props: SidebarContent) {
       >
         <NextAvatar h="34px" w="34px" src={avatarNU} me="10px" />
         <Text color={textColor} fontSize="xs" fontWeight="600" me="10px" flexGrow={1}>
-          Username
+          { username }
         </Text>
 
         <Menu>

@@ -28,6 +28,7 @@
     "babel-preset-es2015": "^6.24.1",
     "babel-preset-react": "^6.24.1",
     "babel-register": "^6.26.0",
+    "cookies-next": "^4.2.1",
     "endent": "^2.1.0",
     "eventsource-parser": "^1.0.0",
     "framer-motion": "^4.1.17",
