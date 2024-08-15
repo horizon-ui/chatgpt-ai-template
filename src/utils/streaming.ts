@@ -88,12 +88,13 @@ export function streamAIMessage(
 ) {
 
   // Package user message into a POST request body
-  const full_options = {
+  const full_options: RequestInit = {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({ message }),
+    credentials: "include",
 
     // Combine any other options 
     ...options,

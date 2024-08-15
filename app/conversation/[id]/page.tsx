@@ -24,6 +24,9 @@ import {
 // React imports
 import { useEffect, useState } from 'react';
 
+// NextJS imports
+import { useRouter, useParams, useSearchParams } from 'next/navigation'
+
 
 
 const APIDOMAIN = process.env.API_DOMAIN;
@@ -34,6 +37,9 @@ export default function Chat(props: { apiKeyApp: string }) {
 
 
   // -------------- Variables --------------
+
+  // Path parameters
+  const params = useParams<{ id: string }>()
 
   // Input text
   const [ inputCode,  setInputCode  ] = useState<string>('');
@@ -54,6 +60,25 @@ export default function Chat(props: { apiKeyApp: string }) {
     fetch(`${APIDOMAIN}/api/characters`)
       .then(resp => resp.json())
       .then(json => { setCharacters(json) });
+  }, [])
+
+  // Retrieve the conversation information from the API
+  useEffect(() => {
+    fetch(`${APIDOMAIN}/api/conversation/${params.id}`, {credentials: 'include'})
+      .then(resp => resp.json())
+      .then(json => {
+
+        // Fill in the conversation history
+        if (json.messages) {
+          setOutputCode(json.messages.map((msg: string) => {
+            const dialogue = JSON.parse(msg)
+            if (dialogue.speaker === "user") {
+              dialogue.speaker = Character("Me")
+            }
+            return dialogue
+          }));
+        }
+      });
   }, [])
 
 
@@ -155,7 +180,7 @@ export default function Chat(props: { apiKeyApp: string }) {
 
     // Send the user message to the API and stream the results
     streamAIMessage(
-      `${APIDOMAIN}/api/message`,
+      `${APIDOMAIN}/api/conversation/${params.id}/message`,
       inputCode,
 
       // Additional request options
