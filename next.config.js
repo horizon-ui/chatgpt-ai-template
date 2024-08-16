@@ -19,7 +19,8 @@ const nextConfig = {
     APP_VERSION: process.env.npm_package_version,
     API_DOMAIN:  process.env.REACT_APP_API_DOMAIN,
     SSO_URL:     process.env.SSO_URL,
-  }
+  },
+  output: 'standalone'
 };
 
 module.exports = nextConfig;

@@ -32,7 +32,8 @@ const APIDOMAIN = process.env.API_DOMAIN
 
 
 
-export default function Page(props: { apiKeyApp: string }) {
+//export default function Page(props: { apiKeyApp: string }) {
+export default function Page() {
 
   // Input text
   const [ inputCode,  setInputCode  ] = useState<string>('');

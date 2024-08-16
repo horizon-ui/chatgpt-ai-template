@@ -16,7 +16,7 @@ import {
 } from '@chakra-ui/react';
 import NavLink from '@/components/link/NavLink';
 //   Custom components
-import avatarNU from '/public/img/avatars/nu.png';
+// import avatarNU from '/public/img/avatars/nu.png';
 import { NextAvatar } from '@/components/image/Avatar';
 import APIModal from '@/components/apiModal';
 import Brand from '@/components/sidebar/components/Brand';
@@ -69,7 +69,7 @@ function SidebarContent(props: SidebarContent) {
   // Fill as an effect to avoid hydration error
   const [ username, setUsername ] = useState<string>('');
   useEffect(() => {
-    setUsername( (userData['name_first'] || ['']).join(' ') )
+    // setUsername( (userData['name_first'] || ['']).join(' ') )
   }, [])
 
 
@@ -100,7 +100,7 @@ function SidebarContent(props: SidebarContent) {
         borderRadius="30px"
         p="14px"
       >
-        <NextAvatar h="34px" w="34px" src={avatarNU} me="10px" />
+        {/* <NextAvatar h="34px" w="34px" src={avatarNU} me="10px" /> */}
         <Text color={textColor} fontSize="xs" fontWeight="600" me="10px" flexGrow={1}>
           { username }
         </Text>

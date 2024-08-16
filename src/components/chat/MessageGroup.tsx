@@ -61,8 +61,9 @@ export function MessageGroup({ messages, colorPalettes }: MessageGroupProps) {
 
         {/* Message Text(s) */}
         {
-          messages.messages.map(message => 
+          messages.messages.map((message, key) => 
             <MessageBox
+              key = { key }
               output       = { message }
               colorPalette = { isUserMessage ? colorPalettes.messages_user : colorPalettes.messages_ai }
             />

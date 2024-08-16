@@ -20,7 +20,8 @@ const APIDOMAIN = process.env.API_DOMAIN;
 
 
 
-export default function Home(props: { apiKeyApp: string }) {
+//export default function Home(props: { apiKeyApp: string }) {
+export default function Home() {
 
   // -------------- Component(s) --------------
 
