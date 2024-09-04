@@ -5,7 +5,7 @@ import { ChakraProvider, Box, Portal, useDisclosure } from '@chakra-ui/react';
 import theme from '@/theme/theme';
 import routes from '@/routes';
 import Sidebar from '@/components/sidebar/Sidebar';
-import Footer from '@/components/footer/FooterAdmin';
+// import Footer from '@/components/footer/FooterAdmin';
 import Navbar from '@/components/navbar/NavbarAdmin';
 import { getActiveRoute, getActiveNavbar } from '@/utils/navigation';
 import { usePathname } from 'next/navigation';
@@ -33,11 +33,8 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       <body id={'root'}>
         <AppWrappers>
           {/* <ChakraProvider theme={theme}> */}
-          {pathname?.includes('register') || pathname?.includes('sign-in') ? (
-            children
-          ) : (
             <Box>
-              <Sidebar setApiKey={setApiKey} routes={routes} />
+              <Sidebar setApiKey={setApiKey} routes={routes} onSidebarOpen={onOpen} />
               <Box
                 pt={{ base: '60px', md: '100px' }}
                 float="right"
@@ -75,11 +72,11 @@ export default function RootLayout({ children }: { children: ReactNode }) {
                   {/* <Component apiKeyApp={apiKey} {...pageProps} /> */}
                 </Box>
                 <Box>
-                  <Footer />
+                  {/* <Footer /> */}
                 </Box>
               </Box>
             </Box>
-          )}
+          
           {/* </ChakraProvider> */}
         </AppWrappers>
       </body>
