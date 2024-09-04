@@ -16,7 +16,7 @@ import {
   useColorModeValue,
 } from '@chakra-ui/react';
 import { SearchBar } from '@/components/navbar/searchBar/SearchBar';
-import { SidebarResponsive } from '@/components/sidebar/Sidebar';
+// import { SidebarResponsive } from '@/components/sidebar/Sidebar';
 import { IoMdMoon, IoMdSunny } from 'react-icons/io';
 import { MdInfoOutline } from 'react-icons/md';
 import APIModal from '@/components/apiModal';
@@ -40,7 +40,7 @@ export default function HeaderLinks(props: {
   );
   const buttonBg = useColorModeValue('transparent', 'navy.800');
   const hoverButton = useColorModeValue(
-    { bg: 'gray.100' },
+    { bg: 'blackAlpha.100' },
     { bg: 'whiteAlpha.100' },
   );
   const activeButton = useColorModeValue(
@@ -60,19 +60,10 @@ export default function HeaderLinks(props: {
       borderRadius="30px"
       boxShadow={shadow}
     >
-      <SearchBar
-        mb={() => {
-          if (secondary) {
-            return { base: '10px', md: 'unset' };
-          }
-          return 'unset';
-        }}
-        me="10px"
-        borderRadius="30px"
-      />
-      <SidebarResponsive routes={routes} />
-      <APIModal setApiKey={setApiKey} />
-
+      
+      {/* <SidebarResponsive routes={routes} />
+      <APIModal setApiKey={setApiKey} /> */}
+{/* 
       <Menu>
         <MenuButton p="0px">
           <Icon
@@ -95,7 +86,6 @@ export default function HeaderLinks(props: {
           minW={{ base: 'unset' }}
           maxW={{ base: '360px', md: 'unset' }}
         >
-          {/* <Flex bgImage={navImage} borderRadius="16px" mb="28px" alt="" /> */}
           <Flex flexDirection="column">
             <Link
               isExternal
@@ -158,7 +148,7 @@ export default function HeaderLinks(props: {
             </Link>
           </Flex>
         </MenuList>
-      </Menu>
+      </Menu> */}
 
       <Button
         variant="no-hover"
@@ -220,8 +210,9 @@ export default function HeaderLinks(props: {
           <Flex flexDirection="column" p="10px">
             <NavLink href="/settings">
               <MenuItem
-                _hover={{ bg: 'none' }}
-                _focus={{ bg: 'none' }}
+                _hover={hoverButton}
+                _focus={hoverButton}
+                bg={'none'}
                 color={textColor}
                 borderRadius="8px"
                 px="14px"
@@ -232,19 +223,9 @@ export default function HeaderLinks(props: {
               </MenuItem>
             </NavLink>
             <MenuItem
-              _hover={{ bg: 'none' }}
-              _focus={{ bg: 'none' }}
-              color={textColor}
-              borderRadius="8px"
-              px="14px"
-            >
-              <Text fontWeight="500" fontSize="sm">
-                Newsletter Settings
-              </Text>
-            </MenuItem>
-            <MenuItem
-              _hover={{ bg: 'none' }}
-              _focus={{ bg: 'none' }}
+              _hover={hoverButton}
+              _focus={hoverButton}
+              bg={'none'}
               color="red.400"
               borderRadius="8px"
               px="14px"

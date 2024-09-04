@@ -176,7 +176,7 @@ export default function Chat(props: { apiKeyApp: string }) {
       >
         {/* Model Change */}
         <Flex direction={'column'} w="100%" mb={outputCode ? '20px' : 'auto'}>
-          <Flex
+          {/* <Flex
             mx="auto"
             zIndex="2"
             w="max-content"
@@ -249,9 +249,9 @@ export default function Chat(props: { apiKeyApp: string }) {
               </Flex>
               GPT-3.5
             </Flex>
-          </Flex>
+          </Flex> */}
 
-          <Accordion color={gray} allowToggle w="100%" my="0px" mx="auto">
+          {/* <Accordion color={gray} allowToggle w="100%" my="0px" mx="auto">
             <AccordionItem border="none">
               <AccordionButton
                 borderBottom="0px solid"
@@ -278,7 +278,7 @@ export default function Chat(props: { apiKeyApp: string }) {
                 </Text>
               </AccordionPanel>
             </AccordionItem>
-          </Accordion>
+          </Accordion> */}
         </Flex>
         {/* Main Box */}
         <Flex
@@ -408,19 +408,8 @@ export default function Chat(props: { apiKeyApp: string }) {
           alignItems="center"
         >
           <Text fontSize="xs" textAlign="center" color={gray}>
-            Free Research Preview. ChatGPT may produce inaccurate information
-            about people, places, or facts.
+            EDU-Chatbot can make mistakes. Check important info.
           </Text>
-          <Link href="https://help.openai.com/en/articles/6825453-chatgpt-release-notes">
-            <Text
-              fontSize="xs"
-              color={textColor}
-              fontWeight="500"
-              textDecoration="underline"
-            >
-              ChatGPT May 12 Version
-            </Text>
-          </Link>
         </Flex>
       </Flex>
     </Flex>
