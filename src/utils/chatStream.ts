@@ -1,83 +1,55 @@
-import endent from 'endent';
-import {
-  createParser,
-  ParsedEvent,
-  ReconnectInterval,
-} from 'eventsource-parser';
+// src/utils/chatStream.ts (por ejemplo)
 
-const createPrompt = (inputCode: string) => {
-  const data = (inputCode: string) => {
-    return endent`${inputCode}`;
-  };
+const BACKEND_URL =
+  process.env.BACKEND_URL ?? "http://127.0.0.1:8000";
 
-  if (inputCode) {
-    return data(inputCode);
-  }
-};
-
+/**
+ * Ya no usamos OpenAI directo.
+ * Esta función llama a tu backend FastAPI (/api/chat)
+ * y devuelve un ReadableStream con la respuesta.
+ */
 export const OpenAIStream = async (
   inputCode: string,
-  model: string,
-  key: string | undefined,
+  _model: string,                 // se mantienen por compatibilidad
+  _key: string | undefined,       // pero ya no se usan
 ) => {
-  const prompt = createPrompt(inputCode);
-
-  const system = { role: 'system', content: prompt };
-
-  const res = await fetch(`https://api.openai.com/v1/chat/completions`, {
+  // Llamada al backend Delfos
+  const res = await fetch(`${BACKEND_URL}/api/chat`, {
+    method: "POST",
     headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${key || process.env.NEXT_PUBLIC_OPENAI_API_KEY}`,
+      "Content-Type": "application/json",
     },
-    method: 'POST',
     body: JSON.stringify({
-      model,
-      messages: [system],
-      temperature: 0,
-      stream: true,
+      message: inputCode,
+      user_id: "anonymous",
     }),
   });
 
   const encoder = new TextEncoder();
-  const decoder = new TextDecoder();
 
-  if (res.status !== 200) {
-    const statusText = res.statusText;
-    const result = await res.body?.getReader().read();
+  if (!res.ok) {
+    const errorText = await res.text();
     throw new Error(
-      `OpenAI API returned an error: ${
-        decoder.decode(result?.value) || statusText
-      }`,
+      `Backend Delfos /api/chat devolvió un error: ${errorText}`,
     );
   }
 
+  // Asumimos que el backend devuelve algo tipo:
+  // { reply: "..."} o { answer: "..." }
+  const data = await res.json();
+
+  const reply: string =
+    data.reply ??
+    data.answer ??
+    data.message ??
+    JSON.stringify(data);
+
+  // Creamos un stream sencillo que envía toda la respuesta de una vez
   const stream = new ReadableStream({
-    async start(controller) {
-      const onParse = (event: ParsedEvent | ReconnectInterval) => {
-        if (event.type === 'event') {
-          const data = event.data;
-
-          if (data === '[DONE]') {
-            controller.close();
-            return;
-          }
-
-          try {
-            const json = JSON.parse(data);
-            const text = json.choices[0].delta.content;
-            const queue = encoder.encode(text);
-            controller.enqueue(queue);
-          } catch (e) {
-            controller.error(e);
-          }
-        }
-      };
-
-      const parser = createParser(onParse);
-
-      for await (const chunk of res.body as any) {
-        parser.feed(decoder.decode(chunk));
-      }
+    start(controller) {
+      const queue = encoder.encode(reply);
+      controller.enqueue(queue);
+      controller.close();
     },
   });
 

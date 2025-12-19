@@ -6,8 +6,6 @@ import {
   Text,
   useColorModeValue,
 } from '@chakra-ui/react';
-import logoWhite from '../../../../public/img/layout/logoWhite.png';
-
 export default function SidebarDocs() {
   const bgColor = 'linear-gradient(135deg, #868CFF 0%, #4318FF 100%)';
   const borderColor = useColorModeValue('white', 'navy.800');
@@ -36,7 +34,7 @@ export default function SidebarDocs() {
         top="-47px"
         transform="translate(-50%, 0%)"
       >
-        <Img src={logoWhite.src} w="40px" h="40px" />
+        <Img src="/img/layout/logoWhite.png" w="40px" h="40px" alt="Logo" />
       </Flex>
       <Flex
         direction="column"

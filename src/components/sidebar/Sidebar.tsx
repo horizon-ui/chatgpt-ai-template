@@ -1,4 +1,5 @@
 'use client';
+import dynamic from 'next/dynamic';
 import React, { PropsWithChildren } from 'react';
 
 // chakra imports
@@ -144,4 +145,4 @@ export function SidebarResponsive(props: { routes: IRoute[] }) {
 }
 // PROPS
 
-export default Sidebar;
+export default dynamic(() => Promise.resolve(Sidebar), { ssr: false });

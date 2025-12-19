@@ -3,11 +3,10 @@
 // Chakra Imports
 import {
   Box,
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
   Flex,
+  Img,
   Link,
+  Text,
   useColorModeValue,
 } from '@chakra-ui/react';
 import { useState, useEffect } from 'react';
@@ -34,17 +33,15 @@ export default function AdminNavbar(props: {
   const { secondary, brandText, setApiKey } = props;
 
   // Here are all the props that may change depending on navbar's type or state.(secondary, variant, scrolled)
-  let mainText = useColorModeValue('navy.700', 'white');
-  let secondaryText = useColorModeValue('gray.700', 'white');
+  const brandColor = '#0F4C9B';
+  let mainText = useColorModeValue(brandColor, 'white');
+  let secondaryText = useColorModeValue('gray.600', 'white');
   let navbarPosition = 'fixed' as const;
   let navbarFilter = 'none';
-  let navbarBackdrop = 'blur(20px)';
-  let navbarShadow = 'none';
-  let navbarBg = useColorModeValue(
-    'rgba(244, 247, 254, 0.2)',
-    'rgba(11,20,55,0.5)',
-  );
-  let navbarBorder = 'transparent';
+  let navbarBackdrop = 'none';
+  let navbarShadow = '0 8px 24px rgba(15, 76, 155, 0.08)';
+  let navbarBg = useColorModeValue('white', 'navy.900');
+  let navbarBorder = useColorModeValue('gray.200', 'whiteAlpha.200');
   let secondaryMargin = '0px';
   let gap = '0px';
   const changeNavbar = () => {
@@ -64,87 +61,58 @@ export default function AdminNavbar(props: {
       borderColor={navbarBorder}
       filter={navbarFilter}
       backdropFilter={navbarBackdrop}
-      backgroundPosition="center"
-      backgroundSize="cover"
-      borderRadius="16px"
-      borderWidth="1.5px"
+      borderWidth="1px"
       borderStyle="solid"
-      transitionDelay="0s, 0s, 0s, 0s"
-      transitionDuration=" 0.25s, 0.25s, 0.25s, 0s"
-      transition-property="box-shadow, background-color, filter, border"
-      transitionTimingFunction="linear, linear, linear, linear"
       alignItems={{ xl: 'center' }}
       display={secondary ? 'block' : 'flex'}
       minH="75px"
       justifyContent={{ xl: 'center' }}
       lineHeight="25.6px"
-      mx="auto"
-      mt={secondaryMargin}
-      pb="8px"
-      right={{ base: '12px', md: '30px', lg: '30px', xl: '30px' }}
-      px={{
-        base: '8px',
-        md: '10px',
-      }}
-      ps={{
-        base: '8px',
-        md: '12px',
-      }}
-      pt="8px"
-      top={{ base: '12px', md: '16px', xl: '18px' }}
-      w={{
-        base: 'calc(100vw - 8%)',
-        md: 'calc(100vw - 8%)',
-        lg: 'calc(100vw - 6%)',
-        xl: 'calc(100vw - 350px)',
-        '2xl': 'calc(100vw - 365px)',
-      }}
+      w="100%"
+      top="0"
+      left="0"
+      right="0"
+      px={{ base: '16px', md: '32px' }}
+      py="10px"
     >
       <Flex
         w="100%"
-        flexDirection={{
-          base: 'column',
-          md: 'row',
-        }}
-        alignItems={{ xl: 'center' }}
-        mb={gap}
+        maxW="100%"
+        mx="0"
+        alignItems="center"
+        justifyContent="space-between"
       >
-        <Box mb={{ base: '8px', md: '0px' }}>
-          <Breadcrumb>
-            <BreadcrumbItem color={secondaryText} fontSize="sm" mb="5px">
-              <BreadcrumbLink href="#" color={secondaryText}>
-                Pages
-              </BreadcrumbLink>
-            </BreadcrumbItem>
-
-            <BreadcrumbItem color={secondaryText} fontSize="sm">
-              <BreadcrumbLink href="#" color={secondaryText}>
-                {brandText}
-              </BreadcrumbLink>
-            </BreadcrumbItem>
-          </Breadcrumb>
-          {/* Here we create navbar brand, based on route name */}
-          <Link
-            color={mainText}
-            href="#"
-            bg="inherit"
-            borderRadius="inherit"
-            fontWeight="bold"
-            fontSize="34px"
-            p="0px"
-            _hover={{ color: { mainText } }}
-            _active={{
-              bg: 'inherit',
-              transform: 'none',
-              borderColor: 'transparent',
-            }}
-            _focus={{
-              boxShadow: 'none',
-            }}
-          >
-            {brandText}
-          </Link>
-        </Box>
+        <Flex direction="column" gap="6px">
+          <Img
+            src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8d/Logo_bancosAval.png/1200px-Logo_bancosAval.png"
+            alt="Grupo Aval"
+            h="30px"
+            w="auto"
+            objectFit="contain"
+          />
+          <Box>
+            <Link
+              color={mainText}
+              href="#"
+              bg="inherit"
+              borderRadius="inherit"
+              fontWeight="bold"
+              fontSize="30px"
+              p="0px"
+              _hover={{ color: mainText }}
+              _active={{
+                bg: 'inherit',
+                transform: 'none',
+                borderColor: 'transparent',
+              }}
+              _focus={{
+                boxShadow: 'none',
+              }}
+            >
+              {brandText}
+            </Link>
+          </Box>
+        </Flex>
         <Box ms="auto" w={{ sm: '100%', md: 'unset' }}>
           <AdminNavbarLinks setApiKey={setApiKey} secondary={props.secondary} />
         </Box>

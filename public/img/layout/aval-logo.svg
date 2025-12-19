@@ -1,0 +1,10 @@
+<svg width="220" height="60" viewBox="0 0 220 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <text x="18" y="24" fill="#0F4C9B" font-family="Arial, sans-serif" font-size="12" letter-spacing="0.6">Grupo</text>
+  <g transform="translate(12,28)">
+    <path d="M0 22 L10 0 L20 22 L14 22 L10 12 L6 22 Z" fill="#0F4C9B"/>
+    <path d="M28 22 L38 0 L48 22 L42 22 L38 12 L34 22 Z" fill="#D1342C"/>
+    <path d="M56 22 L66 0 L76 22 L70 22 L66 12 L62 22 Z" fill="#0F4C9B"/>
+    <rect x="84" y="8" width="10" height="14" fill="#0F4C9B"/>
+    <rect x="84" y="18" width="16" height="4" fill="#0F4C9B"/>
+  </g>
+</svg>
