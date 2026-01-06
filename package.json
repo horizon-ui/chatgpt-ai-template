@@ -1,7 +1,9 @@
 {
-  "name": "horizon-ai-template-pro",
+  "name": "delfos-frontend",
   "version": "3.0.0",
   "private": true,
+  "description": "Frontend de Delfos construido con Next.js, React y Chakra UI",
+  "author": "Business Integration Partners",
   "scripts": {
     "dev": "next dev",
     "build": "next build",

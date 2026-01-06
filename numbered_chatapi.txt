@@ -1,0 +1,13 @@
+2:export const runtime = "nodejs";
+7:  "http://127.0.0.1:8000/api/chat";
+15:      const body = JSON.parse(raw || "{}"); // lo que envía el front
+26:      return new Response("Falta inputCode en el body", { status: 400 });
+32:      user_id: userId ?? "anonymous",
+36:      method: "POST",
+38:        "Content-Type": "application/json",
+44:    console.log("Backend response:", text);
+47:      console.error("Error backend Delfos:", text);
+53:      headers: { "Content-Type": "application/json" },
+56:    console.error("Error llamando al backend Delfos:", error);
+60:        : "Error llamando al backend Delfos";
+66:  return new Response("Método no soportado", { status: 405 });
